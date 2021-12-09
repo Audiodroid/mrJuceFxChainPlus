@@ -12,15 +12,17 @@ public:
     using FxChain = juce::dsp::ProcessorChain<juce::dsp::Reverb,
                         juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>>;
 
-    JuceFxChainWrapper() {
+    JuceFxChainWrapper() : 
+        _cutoffInHz(200.0f)
+    {
 
         _pJuceFxChain = std::shared_ptr<FxChain>(new FxChain());
     }
 
-    void setupFilter(double sampleRate, float cutoffInHz)
+    void setupFilter(double sampleRate)
     {
         auto& filter = _pJuceFxChain->template get<idxFilter>();
-        filter.state = FilterCoefs::makeFirstOrderLowPass(sampleRate, cutoffInHz);
+        filter.state = FilterCoefs::makeFirstOrderLowPass(sampleRate, _cutoffInHz);
     }
 
     void prepare(juce::dsp::ProcessSpec& spec)
@@ -43,4 +45,6 @@ private:
     };
 
     std::shared_ptr<FxChain> _pJuceFxChain;
+    
+    float _cutoffInHz;
 };

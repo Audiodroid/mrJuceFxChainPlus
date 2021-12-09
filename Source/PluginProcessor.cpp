@@ -119,7 +119,7 @@ void MrJuceFxChainPlusAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void MrJuceFxChainPlusAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    _juceFxChainWrapper->setupFilter(sampleRate, _cutoffInHz);
+    _juceFxChainWrapper->setupFilter(sampleRate);
 
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
