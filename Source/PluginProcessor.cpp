@@ -20,7 +20,7 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), _cutoffInHz(200.0f)
 #endif
 {
     _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());
@@ -35,7 +35,7 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor(std::shared_ptr
 #endif
         .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-    )
+    ), _cutoffInHz(200.0f)
 #endif
 {
     _juceFxChainWrapper = juceFxChainWrapper;
@@ -94,22 +94,33 @@ int MrJuceFxChainPlusAudioProcessor::getCurrentProgram()
     return 0;
 }
 
+#pragma warning( push )
+#pragma warning( disable : 4100 )
 void MrJuceFxChainPlusAudioProcessor::setCurrentProgram (int index)
 {
 }
+#pragma warning( pop )
 
+#pragma warning( push )
+#pragma warning( disable : 4100 )
 const juce::String MrJuceFxChainPlusAudioProcessor::getProgramName (int index)
 {
     return {};
 }
+#pragma warning( pop )
 
+#pragma warning( push )
+#pragma warning( disable : 4100 )
 void MrJuceFxChainPlusAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
+#pragma warning( pop )
 
 //==============================================================================
 void MrJuceFxChainPlusAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    _juceFxChainWrapper->setupFilter(sampleRate, _cutoffInHz);
+
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
@@ -149,6 +160,9 @@ bool MrJuceFxChainPlusAudioProcessor::isBusesLayoutSupported (const BusesLayout&
 }
 #endif
 
+
+#pragma warning( push )
+#pragma warning( disable : 4100 )
 void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -168,6 +182,7 @@ void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     juce::dsp::ProcessContextReplacing<float> context(block);
     _juceFxChainWrapper->process(context);
 }
+#pragma warning( pop )
 
 //==============================================================================
 bool MrJuceFxChainPlusAudioProcessor::hasEditor() const
@@ -181,18 +196,24 @@ juce::AudioProcessorEditor* MrJuceFxChainPlusAudioProcessor::createEditor()
 }
 
 //==============================================================================
+#pragma warning( push )
+#pragma warning( disable : 4100 )
 void MrJuceFxChainPlusAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
+#pragma warning( pop )
 
+#pragma warning( push )
+#pragma warning( disable : 4100 )
 void MrJuceFxChainPlusAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
+#pragma warning( pop )
 
 //==============================================================================
 // This creates new instances of the plugin..

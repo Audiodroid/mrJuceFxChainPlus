@@ -5,7 +5,8 @@
 class IJuceFxChainWrapper {
 
 public:
-
+	
+	virtual void setupFilter(double sampleRate, float cutoffInHz) = 0;
 	virtual void prepare(juce::dsp::ProcessSpec& spec) = 0;
 	virtual void process(juce::dsp::ProcessContextReplacing<float> context) = 0;
 };

@@ -58,6 +58,7 @@ public:
 private:
     
     std::shared_ptr<IJuceFxChainWrapper> _juceFxChainWrapper;
+    float _cutoffInHz;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MrJuceFxChainPlusAudioProcessor)

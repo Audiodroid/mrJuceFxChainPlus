@@ -9,7 +9,10 @@ const int NUM_SMPLS = 2048;
 
 TEST(MrJuceFxChainPlusAudioProcessor_IntegratedTests, WhenProcessingAudioData_ThenItChanges) {
 
+	auto sampleRate = 48000;
+	auto samplesPerBlock = 512;
 	auto diracImpulse = 1.0f;
+
 	auto minSamplesNotZeroBeforeProcessingExpected = 1;
 	auto minSamplesNotZeroAfterProcessingExpected = 10;
 
@@ -45,10 +48,6 @@ TEST(MrJuceFxChainPlusAudioProcessor_IntegratedTests, WhenProcessingAudioData_Th
 
 	/// exercise
 	MrJuceFxChainPlusAudioProcessor mrJuceFxChainPlusAudioProcessor(juceFxChainWrapper);
-
-	auto sampleRate = 48000;
-	auto samplesPerBlock = 512;
-
 	mrJuceFxChainPlusAudioProcessor.prepareToPlay(sampleRate, samplesPerBlock);
 	
 	juce::MidiBuffer midiBuffer;	
