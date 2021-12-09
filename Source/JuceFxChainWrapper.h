@@ -7,6 +7,13 @@ class JuceFxChainWrapper : public IJuceFxChainWrapper {
 
 public:
 
+    using FxChain = juce::dsp::ProcessorChain<juce::dsp::Reverb>;
+
+    JuceFxChainWrapper() {
+
+        _pJuceFxChain = std::shared_ptr<FxChain>(new FxChain());
+    }
+
     void prepare(juce::dsp::ProcessSpec& spec)
     {
         _pJuceFxChain->prepare(spec);
@@ -19,5 +26,5 @@ public:
 
 private:
 
-    std::shared_ptr<juce::dsp::ProcessorChain<>> _pJuceFxChain;
+    std::shared_ptr<FxChain> _pJuceFxChain;
 };
