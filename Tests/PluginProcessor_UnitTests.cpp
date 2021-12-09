@@ -5,7 +5,7 @@
 #include "JuceFxChainWrapperMock.h"
 
 using ::testing::AtLeast;
-TEST(MrJuceFxChainPlusAudioProcessor_Tests, WhenPrepareToPlayIsCalled_ThenPrepareOfWrapperIsCalled) {
+TEST(MrJuceFxChainPlusAudioProcessor_UnitTests, WhenPrepareToPlayIsCalled_ThenPrepareOfWrapperIsCalled) {
 
 	/// prepare
 	auto juceFxChainWrapperMock = new JuceFxChainWrapperMock();
@@ -27,7 +27,7 @@ TEST(MrJuceFxChainPlusAudioProcessor_Tests, WhenPrepareToPlayIsCalled_ThenPrepar
 	/*...see expect-calls above*/
 }
 
-TEST(MrJuceFxChainPlusAudioProcessor_Tests, WhenProcessBlockIsCalled_ThenProcessOfWrapperIsCalled) {
+TEST(MrJuceFxChainPlusAudioProcessor_UnitTests, WhenProcessBlockIsCalled_ThenProcessOfWrapperIsCalled) {
 
 	/// prepare
 	auto juceFxChainWrapperMock = new JuceFxChainWrapperMock();

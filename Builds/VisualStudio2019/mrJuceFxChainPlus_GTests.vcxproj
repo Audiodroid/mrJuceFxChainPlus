@@ -41,6 +41,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Tests\PluginProcessor_IntegratedTests.cpp" />
     <ClCompile Include="..\..\Tests\PluginProcessor_UnitTests.cpp" />
   </ItemGroup>
   <ItemGroup>
