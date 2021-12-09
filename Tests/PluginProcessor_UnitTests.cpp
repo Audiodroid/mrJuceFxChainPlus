@@ -5,7 +5,7 @@
 #include "JuceFxChainWrapperMock.h"
 
 using ::testing::AtLeast;
-TEST(MrJuceFxChainPlusAudioProcessor_Tests, WhenProcessCalled_ThenProcessOfWrapperCalled) {
+TEST(MrJuceFxChainPlusAudioProcessor_Tests, WhenPrepareToPlayIsCalled_ThenPrepareOfWrapperIsCalled) {
 
 	/// prepare
 	auto juceFxChainWrapperMock = new JuceFxChainWrapperMock();
@@ -13,12 +13,34 @@ TEST(MrJuceFxChainPlusAudioProcessor_Tests, WhenProcessCalled_ThenProcessOfWrapp
 	std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper =
 		std::shared_ptr<IJuceFxChainWrapper>(juceFxChainWrapperMock);
 	
-	EXPECT_CALL(*juceFxChainWrapperMock, process)
+	EXPECT_CALL(*juceFxChainWrapperMock, prepare)
 		.Times(AtLeast(1));
 	
 	/// exercise
 	MrJuceFxChainPlusAudioProcessor mrJuceFxChainPlusAudioProcessor(juceFxChainWrapper);
 	
+	auto sampleRate = 48000;
+	auto samplesPerBlock = 512;
+	mrJuceFxChainPlusAudioProcessor.prepareToPlay(sampleRate, samplesPerBlock);
+
+	/// evaluate	
+	/*...see expect-calls above*/
+}
+
+TEST(MrJuceFxChainPlusAudioProcessor_Tests, WhenProcessBlockIsCalled_ThenProcessOfWrapperIsCalled) {
+
+	/// prepare
+	auto juceFxChainWrapperMock = new JuceFxChainWrapperMock();
+
+	std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper =
+		std::shared_ptr<IJuceFxChainWrapper>(juceFxChainWrapperMock);
+
+	EXPECT_CALL(*juceFxChainWrapperMock, process)
+		.Times(AtLeast(1));
+
+	/// exercise
+	MrJuceFxChainPlusAudioProcessor mrJuceFxChainPlusAudioProcessor(juceFxChainWrapper);
+
 	juce::AudioSampleBuffer buffer;
 	juce::MidiBuffer midiBuffer;
 	mrJuceFxChainPlusAudioProcessor.processBlock(buffer, midiBuffer);
