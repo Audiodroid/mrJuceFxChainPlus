@@ -9,6 +9,10 @@ const int NUM_SMPLS = 2048;
 
 TEST(MrJuceFxChainPlusAudioProcessor_IntegratedTests, WhenProcessingAudioData_ThenItChanges) {
 
+	auto diracImpulse = 1.0f;
+	auto minSamplesNotZeroBeforeProcessingExpected = 1;
+	auto minSamplesNotZeroAfterProcessingExpected = 10;
+
 	/// prepare
 	std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper =
 		std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());
@@ -18,7 +22,7 @@ TEST(MrJuceFxChainPlusAudioProcessor_IntegratedTests, WhenProcessingAudioData_Th
 	for (int i = 0; i < NUM_CHNLS; ++i)
 	{
 		float dataForChnl[NUM_SMPLS] = {};
-		dataForChnl[0] = 1.0f;
+		dataForChnl[0] = diracImpulse;
 		dataAllChnls[i] = dataForChnl;
 	}
 	float* const* dataToReferTo = &dataAllChnls[0];
@@ -28,15 +32,15 @@ TEST(MrJuceFxChainPlusAudioProcessor_IntegratedTests, WhenProcessingAudioData_Th
 
 	for(int i = 0; i < NUM_CHNLS; ++i)
 	{
-		ASSERT_EQ(dataToReferTo[i][0], 1.0f);
+		ASSERT_EQ(dataToReferTo[i][0], diracImpulse);
 
 		auto cntSamplesNotZeroBefore = 0;
-		for (int j = 1; j < NUM_SMPLS; ++j)
+		for (int j = 0; j < NUM_SMPLS; ++j)
 		{
 			if (dataToReferTo[i][j] != 0.0f)
 				++cntSamplesNotZeroBefore;			
 		}
-		ASSERT_EQ(cntSamplesNotZeroBefore, 0);
+		ASSERT_EQ(cntSamplesNotZeroBefore, minSamplesNotZeroBeforeProcessingExpected);
 	}
 
 	/// exercise
@@ -44,7 +48,6 @@ TEST(MrJuceFxChainPlusAudioProcessor_IntegratedTests, WhenProcessingAudioData_Th
 
 	auto sampleRate = 48000;
 	auto samplesPerBlock = 512;
-	auto minSamplesNotZeroAfterExpected = 10;
 
 	mrJuceFxChainPlusAudioProcessor.prepareToPlay(sampleRate, samplesPerBlock);
 	
@@ -55,15 +58,15 @@ TEST(MrJuceFxChainPlusAudioProcessor_IntegratedTests, WhenProcessingAudioData_Th
 	for (int i = 0; i < NUM_CHNLS; ++i)
 	{
 		/// dirac impulse "weakened" due to effect(s)
-		ASSERT_LT(dataToReferTo[i][0], 1.0f);
+		ASSERT_LT(dataToReferTo[i][0], diracImpulse);
 
 		auto cntSamplesNotZeroAfter = 0;
-		for (int j = 1; j < NUM_SMPLS; ++j)
+		for (int j = 0; j < NUM_SMPLS; ++j)
 		{
 			/// we expect at least 10 samples to be not zero due to added effect(s)
 			if (dataToReferTo[i][j] != 0.0f)
 				++cntSamplesNotZeroAfter;			
 		}
-		ASSERT_GT(cntSamplesNotZeroAfter, minSamplesNotZeroAfterExpected);
+		ASSERT_GT(cntSamplesNotZeroAfter, minSamplesNotZeroAfterProcessingExpected);
 	}
 }
