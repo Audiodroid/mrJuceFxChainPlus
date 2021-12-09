@@ -13,6 +13,12 @@ TEST(MrJuceFxChainPlusAudioProcessor_UnitTests, WhenPrepareToPlayIsCalled_ThenPr
 	std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper =
 		std::shared_ptr<IJuceFxChainWrapper>(juceFxChainWrapperMock);
 	
+	EXPECT_CALL(*juceFxChainWrapperMock, setupFilter)
+		.Times(AtLeast(1));
+
+	EXPECT_CALL(*juceFxChainWrapperMock, setupGain)
+		.Times(AtLeast(1));
+
 	EXPECT_CALL(*juceFxChainWrapperMock, prepare)
 		.Times(AtLeast(1));
 	

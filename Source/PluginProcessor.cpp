@@ -125,6 +125,9 @@ void MrJuceFxChainPlusAudioProcessor::prepareToPlay (double sampleRate, int samp
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumOutputChannels();
+    
+    _juceFxChainWrapper->setupGain(spec);
+
     _juceFxChainWrapper->prepare(spec);
 }
 
