@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "IJuceFxChainWrapper.h"
 
 //==============================================================================
 /**
@@ -18,6 +19,7 @@ class MrJuceFxChainPlusAudioProcessor  : public juce::AudioProcessor
 public:
     //==============================================================================
     MrJuceFxChainPlusAudioProcessor();
+    MrJuceFxChainPlusAudioProcessor(std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper);
     ~MrJuceFxChainPlusAudioProcessor() override;
 
     //==============================================================================
@@ -54,6 +56,9 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    
+    std::shared_ptr<IJuceFxChainWrapper> _juceFxChainWrapper;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MrJuceFxChainPlusAudioProcessor)
 };
