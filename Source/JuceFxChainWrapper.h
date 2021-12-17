@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "mrGain.h"
 #include "IJuceFxChainWrapper.h"
 
 class JuceFxChainWrapper : public IJuceFxChainWrapper {
@@ -14,7 +15,7 @@ public:
     using FilterCoefs = juce::dsp::IIR::Coefficients<float>;
     using FxChain = juce::dsp::ProcessorChain<juce::dsp::Reverb,
                         juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>,
-                            juce::dsp::Gain<float>>;
+                            mrGain<float>>;
 
     JuceFxChainWrapper() : 
         _cutoffInHz(CUT_OFF_IN_HZ), _gain_dB(GAIN_IN_DB)
