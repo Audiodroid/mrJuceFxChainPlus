@@ -11,6 +11,7 @@
 
 /* add more test files down here*/
 #include "MrGainTests.h"
+#include "MrDelayTests.h"
 
 class MrUnitTestRunner : public juce::UnitTestRunner {
 

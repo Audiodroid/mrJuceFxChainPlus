@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <JuceHeader.h>
+#include "MrSignal.h"
 #include "MrGain.h"
 
 class MrGainTests : public juce::UnitTest
@@ -10,29 +11,9 @@ public:
 
     MrGainTests() : juce::UnitTest("mrGain testing") {}
 
-    void createImpulseSignal(const juce::AudioSourceChannelInfo& audioSrcChnlInfo, float ampImpulse)
-    {
-        const int numSamples = audioSrcChnlInfo.numSamples;
-
-        std::vector<float> signal(numSamples, 0);
-        signal.at(0) = ampImpulse;
-
-        /// copy signal to each channel
-        for (int chnlNum = 0; chnlNum < audioSrcChnlInfo.buffer->getNumChannels(); ++chnlNum)
-        {
-            float* const audioSmplBuf = 
-                audioSrcChnlInfo.buffer->getWritePointer(chnlNum, audioSrcChnlInfo.startSample);
-            
-            auto iter = signal.begin();
-            for (int sample = 0; sample < numSamples; ++sample, ++iter) {
-                audioSmplBuf[sample] = *iter;
-            }            
-        }
-    }
-
     void runTest() override
     {
-        beginTest("when signal at -6dB with 6dB gain output is at 0dB (1.0f linear)");
+        beginTest("when signal at -6dB with 6dB gain then output is at 0dB (1.0f linear)");
         {
             const int numChnls = 2;
             const int numSamples = 16;
@@ -45,13 +26,13 @@ public:
             juce::AudioBuffer<float> audioBuffer(numChnls, numSamples);
             juce::AudioSourceChannelInfo bufferToFill(audioBuffer);
 
-            createImpulseSignal(bufferToFill, minus6dbImpulse);
+            MrSignal::impulse(bufferToFill, minus6dbImpulse);
 
             /// execute...
             std::shared_ptr<MrGain<float>> gain =
                 std::shared_ptr<MrGain<float>>(new MrGain<float>());
                         
-            gain->setGainDecibels(gain_dB);
+            gain->setDelayInSmpls(gain_dB);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);
             juce::dsp::ProcessContextReplacing<float> context(block);

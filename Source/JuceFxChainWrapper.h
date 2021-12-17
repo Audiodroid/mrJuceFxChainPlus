@@ -33,7 +33,7 @@ public:
     {
         auto& gain = _pJuceFxChain->template get<idxGain>();
         gain.prepare(spec);
-        gain.setGainDecibels(_gain_dB);
+        gain.setDelayInSmpls(_gain_dB);
     }
 
     void prepare(juce::dsp::ProcessSpec& spec)

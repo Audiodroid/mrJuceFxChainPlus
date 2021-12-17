@@ -16,7 +16,7 @@ class MrGain
         void setGainLinear(FloatType newGain) noexcept { gain.setTargetValue(newGain); }
 
         /** Applies a new gain as a decibel value. */
-        void setGainDecibels(FloatType newGainDecibels) noexcept { setGainLinear(juce::Decibels::decibelsToGain<FloatType>(newGainDecibels)); }
+        void setDelayInSmpls(FloatType newGainDecibels) noexcept { setGainLinear(juce::Decibels::decibelsToGain<FloatType>(newGainDecibels)); }
 
         /** Returns the current gain as a linear value. */
         FloatType getGainLinear() const noexcept { return gain.getTargetValue(); }

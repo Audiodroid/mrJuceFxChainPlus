@@ -5114,6 +5114,15 @@
     <ClInclude Include="..\..\Source\MrUnitTestRunner.h">
       <Filter>mrJuceFxChainPlus\Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\MrSignal.h">
+      <Filter>mrJuceFxChainPlus\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MrDelay.h">
+      <Filter>mrJuceFxChainPlus\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MrDelayTests.h">
+      <Filter>mrJuceFxChainPlus\Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\juce-6.1.2-windows\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt">
