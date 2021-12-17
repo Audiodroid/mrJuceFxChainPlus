@@ -14,8 +14,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrJuceFxChainPlus_VST3", "m
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrJuceFxChainPlus_SharedCode", "mrJuceFxChainPlus_SharedCode.vcxproj", "{BDA211DE-059F-3D4C-3DE3-834BC4E3AA31}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrJuceFxChainPlus_GTests", "mrJuceFxChainPlus_GTests.vcxproj", "{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -42,14 +40,6 @@ Global
 		{BDA211DE-059F-3D4C-3DE3-834BC4E3AA31}.Release|x64.ActiveCfg = Release|x64
 		{BDA211DE-059F-3D4C-3DE3-834BC4E3AA31}.Release|x64.Build.0 = Release|x64
 		{BDA211DE-059F-3D4C-3DE3-834BC4E3AA31}.Release|x86.ActiveCfg = Release|x64
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Debug|x64.ActiveCfg = Debug|x64
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Debug|x64.Build.0 = Debug|x64
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Debug|x86.ActiveCfg = Debug|Win32
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Debug|x86.Build.0 = Debug|Win32
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Release|x64.ActiveCfg = Release|x64
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Release|x64.Build.0 = Release|x64
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Release|x86.ActiveCfg = Release|Win32
-		{FAE8C6A8-E779-45B6-98A4-3C1B4B77DA1E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

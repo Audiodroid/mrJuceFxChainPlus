@@ -5,11 +5,11 @@
     Applies a gain to audio samples as single samples or AudioBlocks.
 */
 template <typename FloatType>
-class mrGain
+class MrGain
 {
     public:
         
-        mrGain() noexcept = default;
+        MrGain() noexcept = default;
 
         //==============================================================================
         /** Applies a new gain as a linear value. */
@@ -92,7 +92,11 @@ class mrGain
                 auto* dst = outBlock.getChannelPointer(0);
 
                 for (size_t i = 0; i < len; ++i)
-                    dst[i] = src[i] * gain.getNextValue();
+                {
+                    auto g = gain.getNextValue();
+                    auto x = src[i];
+                    dst[i] = x * g;
+                }
             }
             else
             {

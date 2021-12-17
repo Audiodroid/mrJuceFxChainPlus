@@ -2194,7 +2194,9 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\IJuceFxChainWrapper.h" />
     <ClInclude Include="..\..\Source\JuceFxChainWrapper.h" />
-    <ClInclude Include="..\..\Source\mrGain.h" />
+    <ClInclude Include="..\..\Source\MrGain.h" />
+    <ClInclude Include="..\..\Source\MrGainTests.h" />
+    <ClInclude Include="..\..\Source\MrUnitTestRunner.h" />
     <ClInclude Include="..\..\Source\PluginProcessor.h" />
     <ClInclude Include="..\..\Source\PluginEditor.h" />
     <ClInclude Include="..\..\..\..\..\juce-6.1.2-windows\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h" />

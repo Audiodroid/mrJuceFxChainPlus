@@ -10,6 +10,8 @@
 #include "PluginEditor.h"
 #include "JuceFxChainWrapper.h"
 
+#include "mrUnitTestRunner.h"
+
 //==============================================================================
 MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -23,6 +25,12 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
                        ), _cutoffInHz(200.0f)
 #endif
 {
+
+#if _DEBUG
+    MrUnitTestRunner unitTestRunner;
+    unitTestRunner.runAllTests();
+#endif
+
     _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());
 }
 
