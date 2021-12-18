@@ -12,21 +12,21 @@ public:
     MrDelayTests() : juce::UnitTest("mrDelay testing") {}
 
     void runTest() override
-    {
-        beginTest("when just delaying by one then impulse moved by one");
+    {        
+        beginTest("when delay of 2 samples then as of 3rd sample delay comes in");
         {
             const int numChnls = 1;
-            const int numSamples = 16;
+            const int numSamples = 4;
+            
+            const size_t delayInSmpls = 2;
+            const std::vector<float> outExpected = {0.1f, 0.2f, 0.35f, 0.5f}; ///input being (0.1, 0.2, 0.3, 0.4)
+            const auto deltaExpected = 0.0000001f;
 
-            const float impulse = 1.0f;
-            const size_t delayInSmpls = 1;
-            const float outExpected = impulse;
-
-            /// prepare... create signal
+            /// prepare... create ramp meaning (0.1, 0.2, 0.3, 0.4)
             juce::AudioBuffer<float> audioBuffer(numChnls, numSamples);
-            juce::AudioSourceChannelInfo bufferToFill(audioBuffer);
+            juce::AudioSourceChannelInfo audioSrcChnlInfo(audioBuffer);
 
-            MrSignal::impulse(bufferToFill, impulse);
+            MrSignal::ramp(audioSrcChnlInfo);
 
             /// execute...
             std::shared_ptr<MrDelay<float>> delay =
@@ -39,10 +39,15 @@ public:
             delay->process(context);
 
             /// evaluate...
-            for (int channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
+            for (int channel = 0; channel < audioSrcChnlInfo.buffer->getNumChannels(); ++channel)
             {
-                const float* buffer = bufferToFill.buffer->getReadPointer(channel, bufferToFill.startSample);
-                expect(buffer[delayInSmpls] == outExpected);
+                const float* outActual = audioSrcChnlInfo.buffer->getReadPointer(channel, audioSrcChnlInfo.startSample);
+                
+                for(int i = 0; i < numSamples; ++i)
+                {
+                    auto deltaActual = outActual[i] - outExpected[i];
+                    expect(deltaActual < deltaExpected);
+                }
             }
         }
     }

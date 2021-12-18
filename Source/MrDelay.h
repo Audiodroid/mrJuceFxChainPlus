@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <iterator>
+
 /**
     Applies a simple delay to AudioBlocks.
 */
@@ -12,13 +15,24 @@ public:
     
     //==============================================================================
     /** Applies new delay as number of samples. */
-    void setDelayInSmpls(size_t delayInSmpls) noexcept { _delayInSmapls = delayInSmpls; }
+    void setDelayInSmpls(size_t delayInSmpls) noexcept
+    {
+        _delayInSmpls = delayInSmpls;
+        
+        _dlyBuf.resize(_delayInSmpls+1);
+
+        _iterR = _dlyBuf.begin();
+        _iterW = _dlyBuf.begin() + delayInSmpls;
+    }
 
     ///** Applies new delay as a millisecond value. */
     //void setDelayInMs(FloatType newDelayTime) noexcept { setDelayInSmpls(msToSmpls(newDelatTime)); }
 
     /** Returns the current delay as a number of samples. */
-    size_t getDelayInSmpls() const noexcept { return delayInSmpls; }
+    size_t getDelayInSmpls() const noexcept
+    {
+        return _delayInSmpls;
+    }
 
     ///** Returns the current delay as a millisecond value. */
     //FloatType getDelayInMs() const noexcept { return smplsToMs(getDelayInSmpls()); }
@@ -41,7 +55,7 @@ public:
     void reset() noexcept
     {
         if (_sampleRate > 0)
-            setDelayInSmpls(delayInSmpls);
+            setDelayInSmpls(_delayInSmpls);
     }
 
     //==============================================================================
@@ -66,29 +80,36 @@ public:
 
             return;
         }
-
-        std::vector<float> tmp(len, 0);
-
+               
         for (size_t chan = 0; chan < numChannels; ++chan)
         {
             auto* src = inBlock.getChannelPointer(chan);
             auto* dst = outBlock.getChannelPointer(chan);
 
-            for (size_t i = 0; i < len; ++i)
-            {
-                tmp[i] = src[i];
+            for (size_t i = 0; i < len; ++i, ++_iterR, ++_iterW)
+            {                
+                if (_iterR == _dlyBuf.end())
+                    _iterR = _dlyBuf.begin();
+                
+                dst[i] = src[i] + (_feedback * (*_iterR));
 
-                if (i < _delayInSmapls)
-                    dst[i] = 0.0f;
-                else
-                    dst[i] = tmp[i - _delayInSmapls];
+                if (_iterW == _dlyBuf.end())
+                    _iterW = _dlyBuf.begin();
+
+                *_iterW = dst[i];
             }
         }                    
     }
 
 private:
     //==============================================================================
-    size_t _delayInSmapls = 0;
+    size_t _delayInSmpls = 0;
     double _sampleRate = 0;
+    FloatType _feedback = 0.5f;
+
+    std::vector<FloatType> _dlyBuf;
+
+    typename std::vector<FloatType>::const_iterator _iterR;
+    typename std::vector<FloatType>::iterator _iterW;
 };
 

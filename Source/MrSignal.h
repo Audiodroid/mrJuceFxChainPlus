@@ -19,6 +19,26 @@ public:
         copyToChannels(audioSrcChnlInfo, signal);
     }
 
+    static void ramp(const juce::AudioSourceChannelInfo& audioSrcChnlInfo)
+    {
+        auto numSampls = audioSrcChnlInfo.numSamples;
+        std::vector<float> signal(numSampls, 0);
+        
+        auto fac = 0.1f;
+        //auto x = numSampls;
+        //while (x > 10)
+        //{
+        //    fac *= fac;
+        //    x /= 10;
+        //}
+
+        int i = 1;
+        for (auto iter = signal.begin(); iter != signal.end(); ++iter, ++i)
+            *iter = fac * i;
+
+        copyToChannels(audioSrcChnlInfo, signal);
+    }
+
     static void copyToChannels(const juce::AudioSourceChannelInfo& audioSrcChnlInfo, std::vector<float> &signal)
     {
         for (int chnlNum = 0; chnlNum < audioSrcChnlInfo.buffer->getNumChannels(); ++chnlNum)

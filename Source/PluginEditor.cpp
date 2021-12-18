@@ -31,9 +31,9 @@ void MrJuceFxChainPlusAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
     
-    std::string str = "*** mrJuceFxChainPlus ***\n\n";
-    str += "Reverb + LowPass@200Hz + 6dB-Gain\n\n";
-    str += "made by Marcel Roth aka mr";
+    std::string str = "*** MrJuceFxChainPlus ***\n\n";
+    str += "MrDelay + JuceHighPassFilter@500Hz + JuceReverb\n\n";
+    str += "made by Marcel Roth aka Mr";
 
     g.drawFittedText (str, getLocalBounds(), juce::Justification::centred, 1);
 }

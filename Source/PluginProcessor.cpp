@@ -22,7 +22,7 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), _cutoffInHz(200.0f)
+                       )
 #endif
 {
 
@@ -43,7 +43,7 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor(std::shared_ptr
 #endif
         .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-    ), _cutoffInHz(200.0f)
+    )
 #endif
 {
     _juceFxChainWrapper = juceFxChainWrapper;
@@ -134,7 +134,8 @@ void MrJuceFxChainPlusAudioProcessor::prepareToPlay (double sampleRate, int samp
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumOutputChannels();
     
-    _juceFxChainWrapper->setupGain(spec);
+    //_juceFxChainWrapper->setupGain(spec);
+    _juceFxChainWrapper->setupDelay(spec);
 
     _juceFxChainWrapper->prepare(spec);
 }

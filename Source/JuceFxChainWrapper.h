@@ -3,22 +3,24 @@
 #include <JuceHeader.h>
 #include "IJuceFxChainWrapper.h"
 #include "MrGain.h"
+#include "MrDelay.h"
 
 class JuceFxChainWrapper : public IJuceFxChainWrapper {
 
 public:
 
-    const float CUT_OFF_IN_HZ = 200.0f;
-    const float GAIN_IN_DB = 6.0f;
+    const float CUT_OFF_IN_HZ = 500.0f;
+    const size_t DELAY_IN_SMPLS = 36000; // 750ms if smprate = 48000
 
     using Filter = juce::dsp::IIR::Filter<float>;
     using FilterCoefs = juce::dsp::IIR::Coefficients<float>;
-    using FxChain = juce::dsp::ProcessorChain<juce::dsp::Reverb,
-                        juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>,
-                            MrGain<float>>;
+    using FxChain = juce::dsp::ProcessorChain<MrDelay<float>,
+                                                juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>,
+                                                    juce::dsp::Reverb>;
 
     JuceFxChainWrapper() : 
-        _cutoffInHz(CUT_OFF_IN_HZ), _gain_dB(GAIN_IN_DB)
+        _cutoffInHz(CUT_OFF_IN_HZ), 
+        _delayInSmpls(DELAY_IN_SMPLS)
     {
         _pJuceFxChain = std::shared_ptr<FxChain>(new FxChain());
     }
@@ -26,14 +28,14 @@ public:
     void setupFilter(double sampleRate)
     {
         auto& filter = _pJuceFxChain->template get<idxFilter>();
-        filter.state = FilterCoefs::makeFirstOrderLowPass(sampleRate, _cutoffInHz);
+        filter.state = FilterCoefs::makeFirstOrderHighPass(sampleRate, _cutoffInHz);
     }
 
-    void setupGain(juce::dsp::ProcessSpec& spec)
+    void setupDelay(juce::dsp::ProcessSpec& spec)
     {
-        auto& gain = _pJuceFxChain->template get<idxGain>();
-        gain.prepare(spec);
-        gain.setDelayInSmpls(_gain_dB);
+        auto& delay = _pJuceFxChain->template get<idxDelay>();
+        delay.prepare(spec);
+        delay.setDelayInSmpls(_delayInSmpls);
     }
 
     void prepare(juce::dsp::ProcessSpec& spec)
@@ -50,13 +52,13 @@ private:
     
     enum
     {
-        idxReverb,
+        idxDelay,
         idxFilter,
-        idxGain
+        idxReverb
     };
 
     std::shared_ptr<FxChain> _pJuceFxChain;
     
     float _cutoffInHz;
-    float _gain_dB;
+    size_t _delayInSmpls;
 };
