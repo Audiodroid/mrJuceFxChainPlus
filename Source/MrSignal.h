@@ -10,6 +10,7 @@ class MrSignal
 
 public:
 
+    /* creates a signal with an inital impulse followed by zeros as long as number of samples */
     static void impulse(const juce::AudioSourceChannelInfo& audioSrcChnlInfo, float ampImpulse)
     {
         std::vector<float> signal(audioSrcChnlInfo.numSamples, 0);
@@ -19,6 +20,7 @@ public:
         copyToChannels(audioSrcChnlInfo, signal);
     }
 
+    /* good for now, but needs change for something more general */
     static void ramp(const juce::AudioSourceChannelInfo& audioSrcChnlInfo)
     {
         auto numSampls = audioSrcChnlInfo.numSamples;

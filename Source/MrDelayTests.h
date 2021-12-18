@@ -13,26 +13,33 @@ public:
 
     void runTest() override
     {        
-        beginTest("when delay of 2 samples then as of 3rd sample delay comes in");
+        beginTest("when stereo delay with 2-samples-delay-time then as of 3rd sample delay comes in on both channels");
         {
-            const int numChnls = 1;
+            const int numChnls = 2;
             const int numSamples = 4;
             
             const size_t delayInSmpls = 2;
+            const float feedback = 0.5f;
+
             const std::vector<float> outExpected = {0.1f, 0.2f, 0.35f, 0.5f}; ///input being (0.1, 0.2, 0.3, 0.4)
             const auto deltaExpected = 0.0000001f;
 
-            /// prepare... create ramp meaning (0.1, 0.2, 0.3, 0.4)
+            /// prepare... create ramp i.e. (0.1, 0.2, 0.3, 0.4)
             juce::AudioBuffer<float> audioBuffer(numChnls, numSamples);
             juce::AudioSourceChannelInfo audioSrcChnlInfo(audioBuffer);
 
             MrSignal::ramp(audioSrcChnlInfo);
 
             /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+            std::shared_ptr<MrDelay> delay =
+                std::shared_ptr<MrDelay>(new MrDelay());
+
+            juce::dsp::ProcessSpec spec;
+            spec.numChannels = numChnls;
+            delay->prepare(spec);
 
             delay->setDelayInSmpls(delayInSmpls);
+            delay->setFeedback(feedback);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);
             juce::dsp::ProcessContextReplacing<float> context(block);

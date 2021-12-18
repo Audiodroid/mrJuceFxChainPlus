@@ -5105,12 +5105,6 @@
     <ClInclude Include="..\..\Source\JuceFxChainWrapper.h">
       <Filter>mrJuceFxChainPlus\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MrGain.h">
-      <Filter>mrJuceFxChainPlus\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\MrGainTests.h">
-      <Filter>mrJuceFxChainPlus\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\MrUnitTestRunner.h">
       <Filter>mrJuceFxChainPlus\Source</Filter>
     </ClInclude>

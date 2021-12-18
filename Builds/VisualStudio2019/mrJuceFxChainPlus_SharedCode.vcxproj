@@ -2196,8 +2196,6 @@
     <ClInclude Include="..\..\Source\JuceFxChainWrapper.h" />
     <ClInclude Include="..\..\Source\MrDelay.h" />
     <ClInclude Include="..\..\Source\MrDelayTests.h" />
-    <ClInclude Include="..\..\Source\MrGain.h" />
-    <ClInclude Include="..\..\Source\MrGainTests.h" />
     <ClInclude Include="..\..\Source\MrSignal.h" />
     <ClInclude Include="..\..\Source\MrUnitTestRunner.h" />
     <ClInclude Include="..\..\Source\PluginProcessor.h" />

@@ -1,65 +1,72 @@
 #pragma once
 
+#include <cmath>
 #include <vector>
 #include <iterator>
+#include <JuceHeader.h>
 
 /**
     Applies a simple delay to AudioBlocks.
 */
-template <typename FloatType>
 class MrDelay
 {
 public:
+    const float FEEDBACK_LEVEL = 0.5f;
 
     MrDelay() noexcept = default;
     
     //==============================================================================
+    void setFeedback(float feedback) { _feedback.setTargetValue(feedback); }
+
     /** Applies new delay as number of samples. */
     void setDelayInSmpls(size_t delayInSmpls) noexcept
     {
         _delayInSmpls = delayInSmpls;
         
-        _dlyBuf.resize(_delayInSmpls+1);
+        for (int i = 0; i < _numChnls; ++i)
+        {
+            _dlyBufs[i].resize(_delayInSmpls + 1);
 
-        _iterR = _dlyBuf.begin();
-        _iterW = _dlyBuf.begin() + delayInSmpls;
+            _iterRs[i] = _dlyBufs[i].begin();
+            _iterWs[i] = _dlyBufs[i].begin() + delayInSmpls;
+        }
     }
 
-    ///** Applies new delay as a millisecond value. */
-    //void setDelayInMs(FloatType newDelayTime) noexcept { setDelayInSmpls(msToSmpls(newDelatTime)); }
+    /** Applies new delay as a millisecond value. */
+    void setDelayInMs(double delayInMs) noexcept { setDelayInSmpls(msToSmpls(delayInMs)); }
 
-    /** Returns the current delay as a number of samples. */
-    size_t getDelayInSmpls() const noexcept
-    {
-        return _delayInSmpls;
-    }
+    /** Returns the current delay in a number of samples. */
+    size_t getDelayInSmpls() const noexcept { return _delayInSmpls; }
 
-    ///** Returns the current delay as a millisecond value. */
-    //FloatType getDelayInMs() const noexcept { return smplsToMs(getDelayInSmpls()); }
+    /** Returns the current delay as a millisecond value. */
+    double getDelayInMs() const noexcept { return smplsToMs(getDelayInSmpls()); }
 
-    ///** Converts time to samples */
-    //size_t msToSmpls(FloatType ms) { return (ms * sampleRate) / 1000 ; }
+    /** Converts time in ms to samples */
+    size_t msToSmpls(double ms) const noexcept { return (size_t) (std::round(ms * _sampleRate) / 1000.0f); }
 
-    ///** Converts samples to time */
-    //FloatType smplsToMs(size_t smpls) { return smpls * 1000 / sampleRate; }
+    /** Converts samples to time in ms*/
+    double smplsToMs(size_t smpls) const noexcept { return smpls * 1000 / _sampleRate; }
 
     //==============================================================================
     /** Called before processing starts. */
     void prepare(const juce::dsp::ProcessSpec& spec) noexcept
     {
-        _sampleRate = spec.sampleRate;
-        reset();
-    }
+        /// if we already have a delay value set, reset it to fit the new sampleRate
+        if ((_delayInSmpls > 0) && (_sampleRate > 0) && spec.sampleRate != _sampleRate)
+        {
+            auto delayInSmpls = (size_t) (std::round((_delayInSmpls * spec.sampleRate) / _sampleRate));
+            setDelayInSmpls(delayInSmpls);
+        }
 
-    /** Resets the internal state of the delay */
-    void reset() noexcept
-    {
-        if (_sampleRate > 0)
-            setDelayInSmpls(_delayInSmpls);
+        _sampleRate = spec.sampleRate;
+        _numChnls = spec.numChannels;
+        
+        _dlyBufs.resize(_numChnls);
+        _iterRs.resize(_numChnls);
+        _iterWs.resize(_numChnls);
     }
 
     //==============================================================================
-
     /** Processes the input and output buffers supplied in the processing context. */
     template <typename ProcessContext>
     void process(const ProcessContext& context) noexcept
@@ -81,22 +88,23 @@ public:
             return;
         }
                
-        for (size_t chan = 0; chan < numChannels; ++chan)
+        for (size_t c = 0; c < numChannels; ++c)
         {
-            auto* src = inBlock.getChannelPointer(chan);
-            auto* dst = outBlock.getChannelPointer(chan);
+            auto* src = inBlock.getChannelPointer(c);
+            auto* dst = outBlock.getChannelPointer(c);
 
-            for (size_t i = 0; i < len; ++i, ++_iterR, ++_iterW)
+            for (size_t i = 0; i < len; ++i, ++_iterRs[c], ++_iterWs[c])
             {                
-                if (_iterR == _dlyBuf.end())
-                    _iterR = _dlyBuf.begin();
+                if (_iterRs[c] == _dlyBufs[c].end())
+                    _iterRs[c] = _dlyBufs[c].begin();
                 
-                dst[i] = src[i] + (_feedback * (*_iterR));
+                const float feedback = _feedback.getNextValue();
+                dst[i] = src[i] + (feedback * (*_iterRs[c]));
 
-                if (_iterW == _dlyBuf.end())
-                    _iterW = _dlyBuf.begin();
+                if (_iterWs[c] == _dlyBufs[c].end())
+                    _iterWs[c] = _dlyBufs[c].begin();
 
-                *_iterW = dst[i];
+                *_iterWs[c] = dst[i];
             }
         }                    
     }
@@ -105,11 +113,12 @@ private:
     //==============================================================================
     size_t _delayInSmpls = 0;
     double _sampleRate = 0;
-    FloatType _feedback = 0.5f;
+    juce::SmoothedValue<float> _feedback = FEEDBACK_LEVEL;
 
-    std::vector<FloatType> _dlyBuf;
-
-    typename std::vector<FloatType>::const_iterator _iterR;
-    typename std::vector<FloatType>::iterator _iterW;
+    int _numChnls = 0;
+    std::vector < std::vector<float>> _dlyBufs;
+    std::vector < std::vector<float>::const_iterator> _iterRs;
+    std::vector < std::vector<float>::iterator> _iterWs;
 };
+
 
