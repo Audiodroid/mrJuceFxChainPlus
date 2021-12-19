@@ -24,8 +24,8 @@ class JuceFxChainWrapperMock : public IJuceFxChainWrapper {
 
 public:
 
+	void setupFilter(juce::dsp::ProcessSpec& spec) { _log.push_back(__func__); }
 	void setupDelay(juce::dsp::ProcessSpec& spec) { _log.push_back(__func__); }
-	void setupFilter(double sampleRate) { _log.push_back(__func__); }
 	void setupReverb() { _log.push_back(__func__); }
 	void prepare(juce::dsp::ProcessSpec& spec) { _log.push_back(__func__); }
 	void process(juce::dsp::ProcessContextReplacing<float> context) { _log.push_back(__func__); }

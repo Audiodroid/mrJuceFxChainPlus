@@ -10,15 +10,15 @@ public:
 
     using Filter = juce::dsp::IIR::Filter<float>;
     using FilterCoefs = juce::dsp::IIR::Coefficients<float>;
-    using FxChain = juce::dsp::ProcessorChain<MrDelay<float>,
-                                                juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>,
+    using FxChain = juce::dsp::ProcessorChain<juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>, 
+                                                MrDelay<float>,                                                
                                                     juce::dsp::Reverb>;
     ///delay
     const double DELAY_IN_MS = 750;
     const float FEEDBACK = 0.5f;
 
     ///filter
-    const float CUT_OFF_IN_HZ = 500.0f;
+    const float CUT_OFF_IN_HZ = 200.0f;
 
     ///reverb
     const float ROOMSIZE = 0.3f;
@@ -28,6 +28,15 @@ public:
         _pJuceFxChain = std::shared_ptr<FxChain>(new FxChain());                
     }
 
+    void setupFilter(juce::dsp::ProcessSpec& spec)
+    {
+        auto& filter = _pJuceFxChain->template get<idxFilter>();
+        filter.state = FilterCoefs::makeFirstOrderLowPass(spec.sampleRate, CUT_OFF_IN_HZ);
+
+        filter.prepare(spec);
+        filter.reset();
+    }
+
     void setupDelay(juce::dsp::ProcessSpec& spec)
     {
         auto& delay = _pJuceFxChain->template get<idxDelay>();
@@ -35,12 +44,6 @@ public:
 
         delay.setDelayInMs(DELAY_IN_MS);
         delay.setFeedback(FEEDBACK);
-    }
-
-    void setupFilter(double sampleRate)
-    {
-        auto& filter = _pJuceFxChain->template get<idxFilter>();
-        filter.state = FilterCoefs::makeFirstOrderLowPass(sampleRate, CUT_OFF_IN_HZ);
     }
     
     void setupReverb()
@@ -90,8 +93,8 @@ private:
     
     enum
     {
-        idxDelay,
         idxFilter,
+        idxDelay,
         idxReverb
     };
 
