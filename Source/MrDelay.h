@@ -1,3 +1,14 @@
+/*
+  ==============================================================================
+
+   This file is code written by Marcel Roth.   
+   
+   THE CODE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
+
+  ==============================================================================
+*/
 #pragma once
 
 #include <cmath>
@@ -8,6 +19,7 @@
 /**
     Applies a simple delay to AudioBlocks.
 */
+template <typename FloatType>
 class MrDelay
 {
 public:
@@ -16,7 +28,11 @@ public:
     MrDelay() noexcept = default;
     
     //==============================================================================
-    void setFeedback(float feedback) { _feedback.setTargetValue(feedback); }
+    /* Applies a new feedback value to delay. */
+    void setFeedback(FloatType feedback) { _feedback.setTargetValue(feedback); }
+
+    /* Returns the current feedback value. */
+    FloatType getFeedback() { return _feedback.getTargetValue(); }
 
     /** Applies new delay as number of samples. */
     void setDelayInSmpls(size_t delayInSmpls) noexcept
@@ -113,12 +129,10 @@ private:
     //==============================================================================
     size_t _delayInSmpls = 0;
     double _sampleRate = 0;
-    juce::SmoothedValue<float> _feedback = FEEDBACK_LEVEL;
+    juce::SmoothedValue<FloatType> _feedback = FEEDBACK_LEVEL;
 
     int _numChnls = 0;
     std::vector < std::vector<float>> _dlyBufs;
     std::vector < std::vector<float>::const_iterator> _iterRs;
     std::vector < std::vector<float>::iterator> _iterWs;
 };
-
-

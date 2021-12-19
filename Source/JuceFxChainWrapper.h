@@ -10,7 +10,7 @@ public:
 
     using Filter = juce::dsp::IIR::Filter<float>;
     using FilterCoefs = juce::dsp::IIR::Coefficients<float>;
-    using FxChain = juce::dsp::ProcessorChain<MrDelay,
+    using FxChain = juce::dsp::ProcessorChain<MrDelay<float>,
                                                 juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>,
                                                     juce::dsp::Reverb>;
     ///delay

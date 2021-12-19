@@ -13,7 +13,21 @@ public:
 
     void runTest() override
     {        
-        beginTest("when stereo delay with 2-samples-delay-time then as of 3rd sample delay comes in on both channels");
+        beginTest("When feedback is set then delay return the newly set feedback.");
+        {
+            float feedbackExpected = 0.7f;
+
+            /// execute...
+            std::shared_ptr<MrDelay<float>> delay =
+                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+
+            delay->setFeedback(feedbackExpected);
+            auto feedbackActual = delay->getFeedback();
+
+            expect(feedbackActual == feedbackExpected);
+        }
+
+        beginTest("When stereo delay with 2-samples-delay-time then as of 3rd sample delay comes in on both channels");
         {
             const int numChnls = 2;
             const int numSamples = 4;
@@ -31,8 +45,8 @@ public:
             MrSignal::ramp(audioSrcChnlInfo);
 
             /// execute...
-            std::shared_ptr<MrDelay> delay =
-                std::shared_ptr<MrDelay>(new MrDelay());
+            std::shared_ptr<MrDelay<float>> delay =
+                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
 
             juce::dsp::ProcessSpec spec;
             spec.numChannels = numChnls;
