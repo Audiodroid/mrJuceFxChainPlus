@@ -102,19 +102,13 @@ public:
 
     void setRoomSize(float roomSize)
     {
-        auto& reverb = _pJuceFxChain->template get<idxReverb>();
-        auto params = reverb.getParameters();
-
-        params.roomSize = roomSize;
-        reverb.setParameters(params);
+        _roomSize = roomSize;
+        _updateReverbFlag = true;
     }
 
     float getRoomSize()
-    {
-        auto& reverb = _pJuceFxChain->template get<idxReverb>();
-        auto params = reverb.getParameters();
-
-        return params.roomSize;
+    {        
+        return _roomSize;
     }
 
     void updateFilter()
@@ -126,6 +120,20 @@ public:
         *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
 
         _updateFilterFlag = false;
+    }
+
+    void updateReverb()
+    {
+        if (!_updateReverbFlag)
+            return;
+
+        auto& reverb = _pJuceFxChain->template get<idxReverb>();
+        auto params = reverb.getParameters();
+
+        params.roomSize = _roomSize;
+        reverb.setParameters(params);
+
+        _updateReverbFlag = false;
     }
 
 private:
@@ -143,4 +151,6 @@ private:
     bool _updateFilterFlag = false;
     float _cutOffInHz;
 
+    bool _updateReverbFlag = false;
+    float _roomSize;
 };

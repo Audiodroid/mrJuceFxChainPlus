@@ -177,7 +177,8 @@ bool MrJuceFxChainPlusAudioProcessor::isBusesLayoutSupported (const BusesLayout&
 void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     _juceFxChainWrapper->updateFilter();
-    
+    _juceFxChainWrapper->updateReverb();
+
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
