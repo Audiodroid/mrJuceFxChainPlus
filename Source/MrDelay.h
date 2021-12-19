@@ -23,7 +23,8 @@ template <typename FloatType>
 class MrDelay
 {
 public:
-    const float FEEDBACK_LEVEL = 0.5f;
+    const float SAMPLERATE_DEFAULT = 48000;
+    const float FEEDBACK_DEFAULT = 0.5f;
 
     MrDelay() noexcept = default;
     
@@ -61,14 +62,15 @@ public:
     size_t msToSmpls(double ms) const noexcept { return (size_t) (std::round(ms * _sampleRate) / 1000.0f); }
 
     /** Converts samples to time in ms*/
-    double smplsToMs(size_t smpls) const noexcept { return smpls * 1000 / _sampleRate; }
+    double smplsToMs(size_t smpls) const noexcept { return (_sampleRate != 0) ? (smpls * 1000 / _sampleRate) : 0.0; }
 
     //==============================================================================
     /** Called before processing starts. */
     void prepare(const juce::dsp::ProcessSpec& spec) noexcept
     {
-        /// if we already have a delay value set, reset it to fit the new sampleRate
-        if ((_delayInSmpls > 0) && (_sampleRate > 0) && spec.sampleRate != _sampleRate)
+        /* if we have a delay value and samplerate,
+            change delay time to fit the new sampleRate */
+        if ((_delayInSmpls > 0) && (_sampleRate > 0))
         {
             auto delayInSmpls = (size_t) (std::round((_delayInSmpls * spec.sampleRate) / _sampleRate));
             setDelayInSmpls(delayInSmpls);
@@ -128,8 +130,8 @@ public:
 private:
     //==============================================================================
     size_t _delayInSmpls = 0;
-    double _sampleRate = 0;
-    juce::SmoothedValue<FloatType> _feedback = FEEDBACK_LEVEL;
+    double _sampleRate = SAMPLERATE_DEFAULT;
+    juce::SmoothedValue<FloatType> _feedback = FEEDBACK_DEFAULT;
 
     int _numChnls = 0;
     std::vector < std::vector<float>> _dlyBufs;

@@ -20,7 +20,7 @@ public:
         copyToChannels(audioSrcChnlInfo, signal);
     }
 
-    /* good for now, but needs change for something more general */
+    /* creates ramp i.e. (0.1, 0.2, 0.3, 0.4), would need improvment for more universal purpose */
     static void ramp(const juce::AudioSourceChannelInfo& audioSrcChnlInfo)
     {
         auto numSampls = audioSrcChnlInfo.numSamples;

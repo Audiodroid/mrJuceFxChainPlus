@@ -15,13 +15,13 @@ public:
                                                     juce::dsp::Reverb>;
     ///delay
     const double DELAY_IN_MS = 750;
-    const float FEEDBACK = 0.8f;
+    const float FEEDBACK = 0.5f;
 
     ///filter
-    const float CUT_OFF_IN_HZ = 600.0f;
+    const float CUT_OFF_IN_HZ = 500.0f;
 
     ///reverb
-    const float ROOMSIZE = 0.8f;
+    const float ROOMSIZE = 0.3f;
 
     JuceFxChainWrapper() : 
         _delayInMs(DELAY_IN_MS),
