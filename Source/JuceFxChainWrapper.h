@@ -68,9 +68,7 @@ public:
     void setCutOffInHz(float cutOffInHz)
     {
         _cutOffInHz = cutOffInHz;
-
-        auto& filter = _pJuceFxChain->template get<idxFilter>();
-        *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
+        _updateFilterFlag = true;
     }
 
     float getCutOffInHz()
@@ -119,6 +117,17 @@ public:
         return params.roomSize;
     }
 
+    void updateFilter()
+    {
+        if (!_updateFilterFlag)
+            return;
+
+        auto& filter = _pJuceFxChain->template get<idxFilter>();
+        *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
+
+        _updateFilterFlag = false;
+    }
+
 private:
     
     enum
@@ -130,5 +139,8 @@ private:
 
     std::shared_ptr<FxChain> _pJuceFxChain;
     double _sampleRate;
+    
+    bool _updateFilterFlag = false;
     float _cutOffInHz;
+
 };

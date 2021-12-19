@@ -10,6 +10,7 @@ public:
 	virtual void setupDelay(juce::dsp::ProcessSpec& spec) = 0;
 	virtual void setupReverb() = 0;
 	virtual void prepare(juce::dsp::ProcessSpec& spec) = 0;
+	virtual void updateFilter() = 0;
 	virtual void process(juce::dsp::ProcessContextReplacing<float> context) = 0;
 
 	virtual void setDelayInMs(double delayInMs) = 0;
