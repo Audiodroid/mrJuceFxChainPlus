@@ -131,6 +131,60 @@ public:
             }
         }
 
+        beginTest("When processing 2 blocks then delay still works as expected");
+        {
+            const int numChnls = 2;
+            const int numSamplesPerBlock = 2;
+            const int numSamples = 4;
+            const int numBlocks = numSamples / numSamplesPerBlock;
+            const size_t delayInSmpls = 2;
+            const float feedback = 0.5f;
+
+            const std::vector<float> outExpected = { 0.1f, 0.2f, 0.35f, 0.5f }; ///input being (0.1, 0.2, 0.3, 0.4)
+            const auto deltaExpected = 0.0000001f;
+
+            /// prepare... 
+            juce::AudioBuffer<float> audioBuffer(numChnls, numSamples);
+            juce::AudioSourceChannelInfo audioSrcChnlInfo(audioBuffer);
+
+            /* creates ramp i.e. (0.1, 0.2, 0.3, 0.4) */
+            MrSignal::ramp(audioSrcChnlInfo);
+
+            /// execute...
+            std::shared_ptr<MrDelay<float>> delay =
+                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+
+            juce::dsp::ProcessSpec spec;
+            spec.numChannels = numChnls;
+            spec.maximumBlockSize = numSamplesPerBlock;
+            delay->prepare(spec);
+
+            delay->setDelayInSmpls(delayInSmpls);
+            delay->setFeedback(feedback);
+
+            juce::dsp::AudioBlock<float> block(audioBuffer);
+
+            auto offset = 0;
+            for (int i = 0; i < numBlocks; ++i, offset += numSamplesPerBlock)
+            {
+                auto subBlock = block.getSubBlock(offset, numSamplesPerBlock);
+                juce::dsp::ProcessContextReplacing<float> context(subBlock);
+                delay->process(context);
+            }
+
+            /// evaluate...
+            for (int channel = 0; channel < audioSrcChnlInfo.buffer->getNumChannels(); ++channel)
+            {
+                const float* outActual = audioSrcChnlInfo.buffer->getReadPointer(channel, audioSrcChnlInfo.startSample);
+
+                for (int i = 0; i < numSamples; ++i)
+                {
+                    auto deltaActual = outActual[i] - outExpected[i];
+                    expect(deltaActual < deltaExpected);
+                }
+            }
+        }
+
         beginTest("When bypassing then output signal is equal to input signal");
         {
             const int numChnls = 2;
@@ -180,7 +234,7 @@ public:
                 }
             }
         }
-    }
+    }       
 };
 
 static MrDelayTests delayTests;
