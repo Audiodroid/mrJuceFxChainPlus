@@ -23,13 +23,9 @@ public:
     ///reverb
     const float ROOMSIZE = 0.3f;
 
-    JuceFxChainWrapper() : 
-        _delayInMs(DELAY_IN_MS),
-        _feedback(FEEDBACK),
-        _cutoffInHz(CUT_OFF_IN_HZ),
-        _roomSize(ROOMSIZE)
+    JuceFxChainWrapper()
     {
-        _pJuceFxChain = std::shared_ptr<FxChain>(new FxChain());
+        _pJuceFxChain = std::shared_ptr<FxChain>(new FxChain());                
     }
 
     void setupDelay(juce::dsp::ProcessSpec& spec)
@@ -37,14 +33,14 @@ public:
         auto& delay = _pJuceFxChain->template get<idxDelay>();
         delay.prepare(spec);
 
-        delay.setDelayInMs(_delayInMs);
-        delay.setFeedback(_feedback);
+        delay.setDelayInMs(DELAY_IN_MS);
+        delay.setFeedback(FEEDBACK);
     }
 
     void setupFilter(double sampleRate)
     {
         auto& filter = _pJuceFxChain->template get<idxFilter>();
-        filter.state = FilterCoefs::makeFirstOrderHighPass(sampleRate, _cutoffInHz);
+        filter.state = FilterCoefs::makeFirstOrderHighPass(sampleRate, CUT_OFF_IN_HZ);
     }
     
     void setupReverb()
@@ -52,7 +48,7 @@ public:
         auto& reverb = _pJuceFxChain->template get<idxReverb>();
         auto params = reverb.getParameters();
         
-        params.roomSize = _roomSize;
+        params.roomSize = ROOMSIZE;
         reverb.setParameters(params);
     }
 
@@ -66,6 +62,19 @@ public:
         _pJuceFxChain->process(context);
     }
 
+    void setDelayInMs(double delayInMs)
+    {
+        auto& delay = _pJuceFxChain->template get<idxDelay>();
+        delay.setDelayInMs(delayInMs);
+    }
+
+    double getDelayInMs()
+    { 
+        auto& delay = _pJuceFxChain->template get<idxDelay>();
+        return delay.getDelayInMs();
+    };
+
+
 private:
     
     enum
@@ -76,14 +85,4 @@ private:
     };
 
     std::shared_ptr<FxChain> _pJuceFxChain;
-    
-    ///delay
-    double _delayInMs;
-    float _feedback;
-
-    ///filter
-    float _cutoffInHz;
-    
-    ///reverb
-    float _roomSize;
 };

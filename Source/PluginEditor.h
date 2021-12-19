@@ -14,7 +14,8 @@
 //==============================================================================
 /**
 */
-class MrJuceFxChainPlusAudioProcessorEditor  : public juce::AudioProcessorEditor
+class MrJuceFxChainPlusAudioProcessorEditor  : public juce::AudioProcessorEditor,
+                                                    private juce::Slider::Listener
 {
 public:
     MrJuceFxChainPlusAudioProcessorEditor (MrJuceFxChainPlusAudioProcessor&);
@@ -25,9 +26,16 @@ public:
     void resized() override;
 
 private:
+
+    const std::string STR_DELAY = "Delay";
+
+    void sliderValueChanged(juce::Slider* slider) override;
+
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     MrJuceFxChainPlusAudioProcessor& audioProcessor;
+
+    juce::Slider _sliderDelay;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MrJuceFxChainPlusAudioProcessorEditor)
 };

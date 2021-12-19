@@ -31,7 +31,7 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
     unitTestRunner.runAllTests();
 #endif
 
-    _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());
+    _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());   
 }
 
 MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor(std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper)
@@ -226,9 +226,20 @@ void MrJuceFxChainPlusAudioProcessor::setStateInformation (const void* data, int
 }
 #pragma warning( pop )
 
+void MrJuceFxChainPlusAudioProcessor::setDelayInMs(double delayInMs)
+{
+    _juceFxChainWrapper->setDelayInMs(delayInMs);
+}
+
+double MrJuceFxChainPlusAudioProcessor::getDelayInMs()
+{
+    return _juceFxChainWrapper->getDelayInMs();
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new MrJuceFxChainPlusAudioProcessor();
 }
+
