@@ -43,7 +43,7 @@ public:
         for (int i = 0; i < _numChnls; ++i)
         {
             _dlyBufs[i].resize(_delayInSmpls + 1);
-            std::fill(_dlyBufs[i].begin(), _dlyBufs[i].end(), 0);
+            std::fill(_dlyBufs[i].begin(), _dlyBufs[i].end(), 0.0f);
 
             _iterRs[i] = _dlyBufs[i].begin();
             _iterWs[i] = _dlyBufs[i].begin() + delayInSmpls;
