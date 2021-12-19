@@ -18,7 +18,7 @@ public:
     const float FEEDBACK = 0.5f;
 
     ///filter
-    const float CUT_OFF_IN_HZ = 200.0f;
+    const float CUT_OFF_IN_HZ = 500.0f;
 
     ///reverb
     const float ROOMSIZE = 0.3f;
@@ -30,9 +30,11 @@ public:
 
     void setupFilter(juce::dsp::ProcessSpec& spec)
     {
-        auto& filter = _pJuceFxChain->template get<idxFilter>();
-        filter.state = FilterCoefs::makeFirstOrderLowPass(spec.sampleRate, CUT_OFF_IN_HZ);
+        _sampleRate = spec.sampleRate;
 
+        setCutOffInHz(CUT_OFF_IN_HZ);
+
+        auto& filter = _pJuceFxChain->template get<idxFilter>();        
         filter.prepare(spec);
         filter.reset();
     }
@@ -48,11 +50,7 @@ public:
     
     void setupReverb()
     {
-        auto& reverb = _pJuceFxChain->template get<idxReverb>();
-        auto params = reverb.getParameters();
-        
-        params.roomSize = ROOMSIZE;
-        reverb.setParameters(params);
+        setRoomSize(ROOMSIZE);
     }
 
     void prepare(juce::dsp::ProcessSpec& spec)
@@ -63,6 +61,19 @@ public:
     void process(juce::dsp::ProcessContextReplacing<float> context)
     {
         _pJuceFxChain->process(context);
+    }
+
+    void setCutOffInHz(float cutOffInHz)
+    {
+        _cutOffInHz = cutOffInHz;
+
+        auto& filter = _pJuceFxChain->template get<idxFilter>();
+        filter.state = FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
+    }
+
+    float getCutOffInHz()
+    {
+        return _cutOffInHz;
     }
 
     void setDelayInMs(double delayInMs)
@@ -89,6 +100,23 @@ public:
         return delay.getFeedback();
     }
 
+    void setRoomSize(float roomSize)
+    {
+        auto& reverb = _pJuceFxChain->template get<idxReverb>();
+        auto params = reverb.getParameters();
+
+        params.roomSize = roomSize;
+        reverb.setParameters(params);
+    }
+
+    float getRoomSize()
+    {
+        auto& reverb = _pJuceFxChain->template get<idxReverb>();
+        auto params = reverb.getParameters();
+
+        return params.roomSize;
+    }
+
 private:
     
     enum
@@ -99,4 +127,6 @@ private:
     };
 
     std::shared_ptr<FxChain> _pJuceFxChain;
+    double _sampleRate;
+    float _cutOffInHz;
 };

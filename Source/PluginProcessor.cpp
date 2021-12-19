@@ -246,6 +246,26 @@ float MrJuceFxChainPlusAudioProcessor::getFeedback()
     return _juceFxChainWrapper->getFeedback();
 }
 
+void MrJuceFxChainPlusAudioProcessor::setCutOffInHz(float cutOffInHz)
+{        
+    _juceFxChainWrapper->setCutOffInHz(cutOffInHz);
+}
+
+float MrJuceFxChainPlusAudioProcessor::getCutOffInHz()
+{
+    return _juceFxChainWrapper->getCutOffInHz();
+}
+
+void MrJuceFxChainPlusAudioProcessor::setRoomSize(float roomSize)
+{
+    _juceFxChainWrapper->setRoomSize(roomSize);
+}
+
+float MrJuceFxChainPlusAudioProcessor::getRoomSize()
+{
+    return _juceFxChainWrapper->getRoomSize();
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

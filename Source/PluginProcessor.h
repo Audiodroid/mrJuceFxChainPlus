@@ -61,6 +61,12 @@ public:
     void setFeedback(float feedback);
     float getFeedback();
 
+    void setCutOffInHz(float cutOffInHz);
+    float getCutOffInHz();
+
+    void setRoomSize(float roomSize);
+    float getRoomSize();
+
 private:
     
     std::shared_ptr<IJuceFxChainWrapper> _juceFxChainWrapper;

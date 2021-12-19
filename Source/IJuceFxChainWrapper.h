@@ -18,4 +18,9 @@ public:
 	virtual void setFeedback(float feedback) = 0;
 	virtual float getFeedback() = 0;
 
+	virtual void setCutOffInHz(float cutOffInHz) = 0;
+	virtual float getCutOffInHz() = 0;
+
+	virtual void setRoomSize(float roomSize) = 0;
+	virtual float getRoomSize() = 0;
 };
