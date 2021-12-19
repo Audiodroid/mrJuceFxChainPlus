@@ -43,6 +43,9 @@ public:
 
     void setupDelay(juce::dsp::ProcessSpec& spec)
     {
+        setDelayInMs(DELAY_IN_MS);
+        setFeedback(FEEDBACK);
+
         auto& delay = _pJuceFxChain->template get<idxDelay>();
         delay.prepare(spec);
 
@@ -78,26 +81,24 @@ public:
 
     void setDelayInMs(double delayInMs)
     {
-        auto& delay = _pJuceFxChain->template get<idxDelay>();
-        delay.setDelayInMs(delayInMs);
+        _delayInMs = delayInMs;
+        _updateDelayFlag = true;
     }
 
     double getDelayInMs()
     { 
-        auto& delay = _pJuceFxChain->template get<idxDelay>();
-        return delay.getDelayInMs();
+        return _delayInMs;
     };
 
     void setFeedback(float feedback)
     {
-        auto& delay = _pJuceFxChain->template get<idxDelay>();
-        delay.setFeedback(feedback);
+        _feedback = feedback;
+        _updateDelayFlag = true;
     }
 
     float getFeedback()
     {
-        auto& delay = _pJuceFxChain->template get<idxDelay>();
-        return delay.getFeedback();
+        return _feedback;
     }
 
     void setRoomSize(float roomSize)
@@ -120,6 +121,18 @@ public:
         *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
 
         _updateFilterFlag = false;
+    }
+
+    void updateDelay()
+    {
+        if (!_updateDelayFlag)
+            return;
+
+        auto& delay = _pJuceFxChain->template get<idxDelay>();
+        delay.setDelayInMs(_delayInMs);
+        delay.setFeedback(_feedback);
+
+        _updateDelayFlag = false;
     }
 
     void updateReverb()
@@ -153,4 +166,8 @@ private:
 
     bool _updateReverbFlag = false;
     float _roomSize;
+
+    bool _updateDelayFlag = false;
+    double _delayInMs;
+    float _feedback;
 };

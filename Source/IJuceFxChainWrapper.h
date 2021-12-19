@@ -13,6 +13,7 @@ public:
 	
 	virtual void updateFilter() = 0;
 	virtual void updateReverb() = 0;
+	virtual void updateDelay() = 0;
 
 	virtual void process(juce::dsp::ProcessContextReplacing<float> context) = 0;
 

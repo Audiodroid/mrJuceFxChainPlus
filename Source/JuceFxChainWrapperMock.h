@@ -32,6 +32,7 @@ public:
 	
 	void updateFilter() { _log.push_back(__func__); }
 	void updateReverb() { _log.push_back(__func__); }
+	void updateDelay() { _log.push_back(__func__); }
 
 	void process(juce::dsp::ProcessContextReplacing<float> context) { _log.push_back(__func__); }
 	void setDelayInMs(double delayInMs) { _log.push_back(__func__); };

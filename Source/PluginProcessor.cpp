@@ -178,6 +178,7 @@ void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
 {
     _juceFxChainWrapper->updateFilter();
     _juceFxChainWrapper->updateReverb();
+    _juceFxChainWrapper->updateDelay();
 
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
