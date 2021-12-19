@@ -14,4 +14,8 @@ public:
 
 	virtual void setDelayInMs(double delayInMs) = 0;
 	virtual double getDelayInMs() = 0;
+
+	virtual void setFeedback(float feedback) = 0;
+	virtual float getFeedback() = 0;
+
 };

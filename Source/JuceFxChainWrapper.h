@@ -40,7 +40,7 @@ public:
     void setupFilter(double sampleRate)
     {
         auto& filter = _pJuceFxChain->template get<idxFilter>();
-        filter.state = FilterCoefs::makeFirstOrderHighPass(sampleRate, CUT_OFF_IN_HZ);
+        filter.state = FilterCoefs::makeFirstOrderLowPass(sampleRate, CUT_OFF_IN_HZ);
     }
     
     void setupReverb()
@@ -74,6 +74,17 @@ public:
         return delay.getDelayInMs();
     };
 
+    void setFeedback(float feedback)
+    {
+        auto& delay = _pJuceFxChain->template get<idxDelay>();
+        delay.setFeedback(feedback);
+    }
+
+    float getFeedback()
+    {
+        auto& delay = _pJuceFxChain->template get<idxDelay>();
+        return delay.getFeedback();
+    }
 
 private:
     

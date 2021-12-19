@@ -236,6 +236,16 @@ double MrJuceFxChainPlusAudioProcessor::getDelayInMs()
     return _juceFxChainWrapper->getDelayInMs();
 }
 
+void MrJuceFxChainPlusAudioProcessor::setFeedback(float feedback)
+{
+    _juceFxChainWrapper->setFeedback(feedback);
+}
+
+float MrJuceFxChainPlusAudioProcessor::getFeedback()
+{
+    return _juceFxChainWrapper->getFeedback();
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

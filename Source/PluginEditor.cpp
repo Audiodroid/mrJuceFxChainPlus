@@ -13,30 +13,33 @@
 MrJuceFxChainPlusAudioProcessorEditor::MrJuceFxChainPlusAudioProcessorEditor (MrJuceFxChainPlusAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (400, 150);
 
-    // these define the parameters of our slider object
-    _sliderDelay.setName(STR_DELAY);
-    _sliderDelay.setSliderStyle(juce::Slider::LinearHorizontal);
-    _sliderDelay.setRange(0.0, 2000.0, 1.0);
-    _sliderDelay.setTextBoxStyle(juce::Slider::NoTextBox, false, 90, 0);
-    _sliderDelay.setPopupDisplayEnabled(true, false, this);
-    _sliderDelay.setTextValueSuffix(juce::String(" " + STR_DELAY));
-    
+    createSlider(_sliderDelay, STR_DELAY, 0.0, 2000.0, 1.0);
     auto delayInMs = audioProcessor.getDelayInMs();
     _sliderDelay.setValue(delayInMs);
 
-    // this function adds the slider to the editor
-    addAndMakeVisible(&_sliderDelay);
-
-    // add the listener to the slider
-    _sliderDelay.addListener(this);
+    createSlider(_sliderFeedback, STR_FEEDBACK, 0.0, 1.0, 0.01);
+    auto feedback = audioProcessor.getFeedback();
+    _sliderFeedback.setValue(feedback);
 }
 
 MrJuceFxChainPlusAudioProcessorEditor::~MrJuceFxChainPlusAudioProcessorEditor()
 {
+}
+
+void MrJuceFxChainPlusAudioProcessorEditor::createSlider(juce::Slider &slider, const std::string &name, double min, double max, double step)
+{
+    slider.setName(name);
+    slider.setSliderStyle(juce::Slider::LinearHorizontal);
+    slider.setRange(min, max, step);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 90, 0);
+    slider.setPopupDisplayEnabled(true, false, this);
+    slider.setTextValueSuffix(juce::String(" " + name));
+
+    addAndMakeVisible(&slider);
+
+    slider.addListener(this);
 }
 
 //==============================================================================
@@ -48,15 +51,14 @@ void MrJuceFxChainPlusAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
     
-    std::string str = "Delay Time in ms";
-    
-    g.drawFittedText (str, getLocalBounds(), juce::Justification::top, 1);
+    g.drawFittedText("Delay Time [ms]", 10, 10, 100, 20, juce::Justification::top, 1);
+    g.drawFittedText("Feedback [0..1]", 10, 30, 100, 20, juce::Justification::top, 1);
 }
 
 void MrJuceFxChainPlusAudioProcessorEditor::resized()
 {
-    // sets the position and size of the slider with arguments (x, y, width, height)
-    _sliderDelay.setBounds(10, 200, getWidth() - 20, 20);
+    _sliderDelay.setBounds(130, 10, getWidth() - 150, 20);
+    _sliderFeedback.setBounds(130, 30, getWidth() - 150, 20);
 }
 
 void MrJuceFxChainPlusAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
@@ -65,5 +67,8 @@ void MrJuceFxChainPlusAudioProcessorEditor::sliderValueChanged(juce::Slider* sli
     
     if(name.compare(STR_DELAY) == 0)
         audioProcessor.setDelayInMs(slider->getValue());
+    else if(name.compare(STR_FEEDBACK) == 0)
+        audioProcessor.setFeedback((float) slider->getValue());
+        
 }
 

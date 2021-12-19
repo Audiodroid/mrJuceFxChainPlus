@@ -58,6 +58,9 @@ public:
     void setDelayInMs(double delayInMs);
     double getDelayInMs();
 
+    void setFeedback(float feedback);
+    float getFeedback();
+
 private:
     
     std::shared_ptr<IJuceFxChainWrapper> _juceFxChainWrapper;
