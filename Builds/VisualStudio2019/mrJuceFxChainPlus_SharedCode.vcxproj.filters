@@ -5117,6 +5117,12 @@
     <ClInclude Include="..\..\Source\MrDelayTests.h">
       <Filter>mrJuceFxChainPlus\Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\JuceFxChainWrapperMock.h">
+      <Filter>mrJuceFxChainPlus\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\PluginProcessorTests.h">
+      <Filter>mrJuceFxChainPlus\Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\juce-6.1.2-windows\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt">

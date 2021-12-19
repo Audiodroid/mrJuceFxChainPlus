@@ -9,7 +9,7 @@ class MrDelayTests : public juce::UnitTest
 {
 public:
 
-    MrDelayTests() : juce::UnitTest("mrDelay testing") {}
+    MrDelayTests() : juce::UnitTest("MrDelay testing") {}
 
     void runTest() override
     {

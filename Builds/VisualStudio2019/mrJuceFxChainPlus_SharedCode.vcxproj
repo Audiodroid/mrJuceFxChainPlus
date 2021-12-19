@@ -2194,6 +2194,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\IJuceFxChainWrapper.h" />
     <ClInclude Include="..\..\Source\JuceFxChainWrapper.h" />
+    <ClInclude Include="..\..\Source\JuceFxChainWrapperMock.h" />
     <ClInclude Include="..\..\Source\MrDelay.h" />
     <ClInclude Include="..\..\Source\MrDelayTests.h" />
     <ClInclude Include="..\..\Source\MrSignal.h" />
@@ -3045,6 +3046,7 @@
     <ClInclude Include="..\..\..\..\..\juce-6.1.2-windows\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JucePluginDefines.h" />
+    <ClInclude Include="..\..\Source\PluginProcessorTests.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\juce-6.1.2-windows\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt" />
