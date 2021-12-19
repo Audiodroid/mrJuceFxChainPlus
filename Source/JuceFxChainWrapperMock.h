@@ -29,7 +29,6 @@ public:
 	void setupReverb() { _log.push_back(__func__); }
 	void prepare(juce::dsp::ProcessSpec& spec) { _log.push_back(__func__); }
 	void process(juce::dsp::ProcessContextReplacing<float> context) { _log.push_back(__func__); }
-
 	void setDelayInMs(double delayInMs) { _log.push_back(__func__); };
 	double getDelayInMs() { _log.push_back(__func__); return 0.0f; };
 

@@ -33,8 +33,10 @@ public:
         _sampleRate = spec.sampleRate;
 
         setCutOffInHz(CUT_OFF_IN_HZ);
+        
+        auto& filter = _pJuceFxChain->template get<idxFilter>();
+        *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
 
-        auto& filter = _pJuceFxChain->template get<idxFilter>();        
         filter.prepare(spec);
         filter.reset();
     }
@@ -68,7 +70,7 @@ public:
         _cutOffInHz = cutOffInHz;
 
         auto& filter = _pJuceFxChain->template get<idxFilter>();
-        filter.state = FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
+        *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
     }
 
     float getCutOffInHz()
