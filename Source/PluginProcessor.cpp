@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 #include "JuceFxChainWrapper.h"
 
-#include "mrUnitTestRunner.h"
+#include "MrUnitTestRunner.h"
 
 //==============================================================================
 MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
@@ -31,7 +31,7 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
     unitTestRunner.runAllTests();
 #endif
 
-    _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());   
+    _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());
 }
 
 MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor(std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper)
@@ -102,24 +102,18 @@ int MrJuceFxChainPlusAudioProcessor::getCurrentProgram()
     return 0;
 }
 
-JUCE_BEGIN_IGNORE_WARNINGS_MSVC(4100)
 void MrJuceFxChainPlusAudioProcessor::setCurrentProgram (int index)
 {
 }
-JUCE_END_IGNORE_WARNINGS_MSVC
 
-JUCE_BEGIN_IGNORE_WARNINGS_MSVC(4100)
 const juce::String MrJuceFxChainPlusAudioProcessor::getProgramName (int index)
 {
     return {};
 }
-JUCE_END_IGNORE_WARNINGS_MSVC
 
-JUCE_BEGIN_IGNORE_WARNINGS_MSVC(4100)
 void MrJuceFxChainPlusAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
-JUCE_END_IGNORE_WARNINGS_MSVC
 
 //==============================================================================
 void MrJuceFxChainPlusAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -169,7 +163,6 @@ bool MrJuceFxChainPlusAudioProcessor::isBusesLayoutSupported (const BusesLayout&
 #endif
 
 
-JUCE_BEGIN_IGNORE_WARNINGS_MSVC(4100)
 void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     _juceFxChainWrapper->updateFilter();
@@ -187,7 +180,6 @@ void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     juce::dsp::ProcessContextReplacing<float> context(block);
     _juceFxChainWrapper->process(context);
 }
-JUCE_END_IGNORE_WARNINGS_MSVC
 
 //==============================================================================
 bool MrJuceFxChainPlusAudioProcessor::hasEditor() const
@@ -201,22 +193,18 @@ juce::AudioProcessorEditor* MrJuceFxChainPlusAudioProcessor::createEditor()
 }
 
 //==============================================================================
-JUCE_BEGIN_IGNORE_WARNINGS_MSVC(4100)
 void MrJuceFxChainPlusAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
-JUCE_END_IGNORE_WARNINGS_MSVC
 
-JUCE_BEGIN_IGNORE_WARNINGS_MSVC(4100)
 void MrJuceFxChainPlusAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
-JUCE_END_IGNORE_WARNINGS_MSVC
 
 void MrJuceFxChainPlusAudioProcessor::setDelayInMs(double delayInMs)
 {
@@ -239,7 +227,7 @@ float MrJuceFxChainPlusAudioProcessor::getFeedback()
 }
 
 void MrJuceFxChainPlusAudioProcessor::setCutOffInHz(float cutOffInHz)
-{        
+{
     _juceFxChainWrapper->setCutOffInHz(cutOffInHz);
 }
 
