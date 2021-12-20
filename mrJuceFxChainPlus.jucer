@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="JdGX7l" name="mrJuceFxChainPlus" projectType="audioplug"
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
-              jucerFormatVersion="1" jucerVersion="5.4.7">
+              jucerFormatVersion="1">
   <MAINGROUP id="hSzkg6" name="mrJuceFxChainPlus">
     <GROUP id="{A2F7130F-BFF5-4493-3F51-3E674392F36B}" name="Source">
       <FILE id="VoHAdo" name="PluginProcessor.cpp" compile="1" resource="0"
