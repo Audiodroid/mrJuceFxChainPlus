@@ -7,7 +7,7 @@
 class JuceFxChainWrapper : public IJuceFxChainWrapper {
 
 public:
-
+    
     using Filter = juce::dsp::IIR::Filter<float>;
     using FilterCoefs = juce::dsp::IIR::Coefficients<float>;
     using FxChain = juce::dsp::ProcessorChain<juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>, 
@@ -28,6 +28,8 @@ public:
         _pJuceFxChain = std::shared_ptr<FxChain>(new FxChain());                
     }
 
+    ~JuceFxChainWrapper(){}
+    
     void setupFilter(juce::dsp::ProcessSpec& spec)
     {
         _sampleRate = spec.sampleRate;
