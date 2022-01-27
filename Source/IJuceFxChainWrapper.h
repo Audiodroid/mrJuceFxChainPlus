@@ -6,7 +6,8 @@ class IJuceFxChainWrapper {
 
 public:
 	
-	virtual void setupFilter(juce::dsp::ProcessSpec& spec) = 0;
+    virtual ~IJuceFxChainWrapper() {}
+    virtual void setupFilter(juce::dsp::ProcessSpec& spec) = 0;
 	virtual void setupDelay(juce::dsp::ProcessSpec& spec) = 0;
 	virtual void setupReverb() = 0;
 	virtual void prepare(juce::dsp::ProcessSpec& spec) = 0;
