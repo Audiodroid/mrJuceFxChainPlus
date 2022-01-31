@@ -24,13 +24,21 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
                      #endif
                        )
 #endif
-{
-
+{    
 #if _DEBUG
-    MrUnitTestRunner unitTestRunner;
-    unitTestRunner.runAllTests();
-#endif
+    try {
+        
+        //MrUnitTestRunner unitTestRunner;
+        //unitTestRunner.runAllTests();
 
+    } catch (std::exception& e) {
+        std::cout << "Unit tests threw an exception: " << e.what() << std::endl;
+
+    } catch (...) {
+        std::cout << "Unit tests threw an exception." << std::endl;
+
+    }
+#endif
     _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());
 }
 

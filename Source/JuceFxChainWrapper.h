@@ -49,9 +49,9 @@ public:
         setFeedback(FEEDBACK);
 
         auto& delay = _pJuceFxChain->template get<idxDelay>();
+        delay.setDelayInMs(DELAY_IN_MS); 
         delay.prepare(spec);
-
-        delay.setDelayInMs(DELAY_IN_MS);
+        
         delay.setFeedback(FEEDBACK);
     }
     

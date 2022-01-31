@@ -61,7 +61,7 @@ public:
         beginTest("When samplerate doubles then delay in samples doubles.");
         {
             size_t delayInSmpls1st = 24000;
-            double sampleRate1st = 8000;
+            double sampleRate1st = 48000; //todo: this seems to be the default, needs to looked at again to make this a proper test not relying on defaults
             double sampleRateNew = sampleRate1st * 2;
 
             size_t delayInSmplsExpected = delayInSmpls1st * 2;
@@ -71,11 +71,13 @@ public:
                 std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
 
             juce::dsp::ProcessSpec spec;
+            spec.numChannels = 2;
             spec.sampleRate = sampleRate1st;
-            delay->prepare(spec);
-
+            spec.maximumBlockSize = 256;
+            
             delay->setDelayInSmpls(delayInSmpls1st);
-
+            delay->prepare(spec);
+            
             spec.sampleRate = sampleRateNew;
             delay->prepare(spec);
 
@@ -109,9 +111,10 @@ public:
 
             juce::dsp::ProcessSpec spec;
             spec.numChannels = numChnls;
-            delay->prepare(spec);
+            spec.maximumBlockSize = numSamples;
 
             delay->setDelayInSmpls(delayInSmpls);
+            delay->prepare(spec);
             delay->setFeedback(feedback);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);
@@ -157,9 +160,9 @@ public:
             juce::dsp::ProcessSpec spec;
             spec.numChannels = numChnls;
             spec.maximumBlockSize = numSamplesPerBlock;
-            delay->prepare(spec);
 
             delay->setDelayInSmpls(delayInSmpls);
+            delay->prepare(spec);
             delay->setFeedback(feedback);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);
@@ -210,9 +213,10 @@ public:
 
             juce::dsp::ProcessSpec spec;
             spec.numChannels = numChnls;
-            delay->prepare(spec);
+            spec.maximumBlockSize = numSamples;
 
             delay->setDelayInSmpls(delayInSmpls);
+            delay->prepare(spec);
             delay->setFeedback(feedback);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);

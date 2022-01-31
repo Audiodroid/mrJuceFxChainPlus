@@ -23,8 +23,8 @@ template <typename FloatType>
 class MrDelay
 {
 public:
-    const float SAMPLERATE_DEFAULT = 48000;
-    const float FEEDBACK_DEFAULT = 0.5f;
+    const FloatType SAMPLERATE_DEFAULT = 48000;
+    const FloatType FEEDBACK_DEFAULT = 0.5f;
 
     MrDelay() noexcept = default;
     
@@ -39,50 +39,46 @@ public:
     void setDelayInSmpls(size_t delayInSmpls) noexcept
     {
         _delayInSmpls = delayInSmpls;
-        
-        for (int i = 0; i < _numChnls; ++i)
-        {
-            _dlyBufs[i].resize(_delayInSmpls + 1);
-            std::fill(_dlyBufs[i].begin(), _dlyBufs[i].end(), 0.0f);
 
-            _iterRs[i] = _dlyBufs[i].begin();
-            _iterWs[i] = _dlyBufs[i].begin() + delayInSmpls;
-        }
+        if (_dlyBufs == nullptr)
+            return;
+
+        _dlyBufs->setSize(_numChnls, _delayInSmpls + 1);
+        _dlyBufs->clear();
+
+        _posR = 0;
+        _posW = delayInSmpls;
     }
 
     /** Applies new delay as a millisecond value. */
-    void setDelayInMs(double delayInMs) noexcept { setDelayInSmpls(msToSmpls(delayInMs)); }
+    void setDelayInMs(FloatType delayInMs) noexcept { setDelayInSmpls(msToSmpls(delayInMs)); }
 
     /** Returns the current delay in a number of samples. */
     size_t getDelayInSmpls() const noexcept { return _delayInSmpls; }
 
     /** Returns the current delay as a millisecond value. */
-    double getDelayInMs() const noexcept { return smplsToMs(getDelayInSmpls()); }
+    FloatType getDelayInMs() const noexcept { return smplsToMs(getDelayInSmpls()); }
 
     /** Converts time in ms to samples */
-    size_t msToSmpls(double ms) const noexcept { return (size_t) (std::round(ms * _sampleRate) / 1000.0f); }
+    size_t msToSmpls(FloatType ms) const noexcept { return (size_t) (std::round(ms * _sampleRate) / 1000.0f); }
 
     /** Converts samples to time in ms*/
-    double smplsToMs(size_t smpls) const noexcept { return (_sampleRate != 0) ? (smpls * 1000 / _sampleRate) : 0.0; }
+    FloatType smplsToMs(size_t smpls) const noexcept { return (_sampleRate != 0) ? (smpls * 1000 / _sampleRate) : 0.0; }
 
     //==============================================================================
     /** Called before processing starts. */
     void prepare(const juce::dsp::ProcessSpec& spec) noexcept
     {
-        /* if we have a delay value and samplerate,
-            change delay time to fit the new sampleRate */
-        if ((_delayInSmpls > 0) && (_sampleRate > 0))
-        {
-            auto delayInSmpls = (size_t) (std::round((_delayInSmpls * spec.sampleRate) / _sampleRate));
-            setDelayInSmpls(delayInSmpls);
-        }
-
+        if (_sampleRate <= 0)
+            return;
+        
+        auto delayInSmpls = (size_t) (std::round((_delayInSmpls * spec.sampleRate) / _sampleRate));
+        setDelayInSmpls(delayInSmpls);
+       
         _sampleRate = spec.sampleRate;
         _numChnls = spec.numChannels;
         
-        _dlyBufs.resize(_numChnls);
-        _iterRs.resize(_numChnls);
-        _iterWs.resize(_numChnls);
+        _dlyBufs = std::unique_ptr< juce::AudioBuffer<FloatType>>(new juce::AudioBuffer<FloatType>(_numChnls, (int) delayInSmpls+1));
     }
 
     //==============================================================================
@@ -106,36 +102,42 @@ public:
 
             return;
         }
-               
-        for (size_t c = 0; c < numChannels; ++c)
+
+        int dlyBufsLen = _dlyBufs->getNumSamples();
+        for (size_t pos = 0; pos < len; ++pos, ++_posR, ++_posW)
         {
-            auto* src = inBlock.getChannelPointer(c);
-            auto* dst = outBlock.getChannelPointer(c);
+            if (_posR >= dlyBufsLen)
+                _posR = 0;
 
-            for (size_t i = 0; i < len; ++i, ++_iterRs[c], ++_iterWs[c])
-            {                
-                if (_iterRs[c] == _dlyBufs[c].end())
-                    _iterRs[c] = _dlyBufs[c].begin();
-                
-                const float feedback = _feedback.getNextValue();
-                dst[i] = src[i] + (feedback * (*_iterRs[c]));
+            if (_posW >= dlyBufsLen)
+                _posW = 0;
 
-                if (_iterWs[c] == _dlyBufs[c].end())
-                    _iterWs[c] = _dlyBufs[c].begin();
+            for (size_t c = 0; c < numChannels; ++c)
+            {
+                auto* src = inBlock.getChannelPointer(c);
+                auto* dst = outBlock.getChannelPointer(c);
+                            
+                const FloatType feedback = _feedback.getNextValue();
+                auto dly = _dlyBufs->getSample(c, _posR);
+                dst[pos] = src[pos] + (feedback * dly);
 
-                *_iterWs[c] = dst[i];
-            }
+                _dlyBufs->setSample(c, _posW, dst[pos]);
+            }            
         }                    
     }
 
 private:
+
     //==============================================================================
     size_t _delayInSmpls = 0;
-    double _sampleRate = SAMPLERATE_DEFAULT;
+    FloatType _sampleRate = SAMPLERATE_DEFAULT;
     juce::SmoothedValue<FloatType> _feedback = FEEDBACK_DEFAULT;
 
     int _numChnls = 0;
-    std::vector < std::vector<float>> _dlyBufs;
-    std::vector < std::vector<float>::const_iterator> _iterRs;
-    std::vector < std::vector<float>::iterator> _iterWs;
+
+    /// These vectors need to be replaced byt something that excepts FloatType
+    std::unique_ptr<juce::AudioBuffer<FloatType>> _dlyBufs;
+    
+    int _posR;
+    int _posW;
 };
