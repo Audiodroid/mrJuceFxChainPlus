@@ -110,16 +110,16 @@ int MrJuceFxChainPlusAudioProcessor::getCurrentProgram()
     return 0;
 }
 
-void MrJuceFxChainPlusAudioProcessor::setCurrentProgram (int index)
+void MrJuceFxChainPlusAudioProcessor::setCurrentProgram ([[maybe_unused]]int index)
 {
 }
 
-const juce::String MrJuceFxChainPlusAudioProcessor::getProgramName (int index)
+const juce::String MrJuceFxChainPlusAudioProcessor::getProgramName ([[maybe_unused]] int index)
 {
     return {};
 }
 
-void MrJuceFxChainPlusAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void MrJuceFxChainPlusAudioProcessor::changeProgramName ([[maybe_unused]] int index, [[maybe_unused]] const juce::String& newName)
 {
 }
 
@@ -171,7 +171,7 @@ bool MrJuceFxChainPlusAudioProcessor::isBusesLayoutSupported (const BusesLayout&
 #endif
 
 
-void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void MrJuceFxChainPlusAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[maybe_unused]] juce::MidiBuffer& midiMessages)
 {
     _juceFxChainWrapper->updateFilter();
     _juceFxChainWrapper->updateReverb();
@@ -201,14 +201,14 @@ juce::AudioProcessorEditor* MrJuceFxChainPlusAudioProcessor::createEditor()
 }
 
 //==============================================================================
-void MrJuceFxChainPlusAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void MrJuceFxChainPlusAudioProcessor::getStateInformation ([[maybe_unused]] juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void MrJuceFxChainPlusAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void MrJuceFxChainPlusAudioProcessor::setStateInformation ([[maybe_unused]] const void* data, [[maybe_unused]] int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
