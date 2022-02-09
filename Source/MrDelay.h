@@ -114,18 +114,18 @@ public:
 
 		for (int c = 0; c < numChannels; ++c)
 		{
-			auto tmp = posR;
 			auto* src = inBlock.getChannelPointer(c);
 			auto* dst = outBlock.getChannelPointer(c);
+			auto* dly = dlyBufs.getReadPointer(c);
 
+			auto tmp = posR;
 			for (size_t pos = 0; pos < bufSizeIn; ++pos, ++tmp)
 			{
 				if (tmp >= bufSizeDly)
 					tmp = 0;
 
 				const FloatType fb = feedback.getNextValue();
-				auto dly = dlyBufs.getSample(c, tmp);
-				dst[pos] = src[pos] + (fb * dly);		
+				dst[pos] = src[pos] + (fb * dly[tmp]);
 			}
 		}
 
