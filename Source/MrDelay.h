@@ -112,21 +112,25 @@ public:
 
 		int bufSizeDly = dlyBufs.getNumSamples();
 
-		for (size_t pos = 0; pos < bufSizeIn; ++pos, ++posR)
+		for (int c = 0; c < numChannels; ++c)
 		{
-			if (posR >= bufSizeDly)
-				posR = 0;
+			auto tmp = posR;
+			auto* src = inBlock.getChannelPointer(c);
+			auto* dst = outBlock.getChannelPointer(c);
 
-			for (int c = 0; c < numChannels; ++c)
+			for (size_t pos = 0; pos < bufSizeIn; ++pos, ++tmp)
 			{
-				auto* src = inBlock.getChannelPointer(c);
-				auto* dst = outBlock.getChannelPointer(c);
+				if (tmp >= bufSizeDly)
+					tmp = 0;
 
 				const FloatType fb = feedback.getNextValue();
-				auto dly = dlyBufs.getSample(c, posR);
-				dst[pos] = src[pos] + (fb * dly);			
+				auto dly = dlyBufs.getSample(c, tmp);
+				dst[pos] = src[pos] + (fb * dly);		
 			}
 		}
+
+		posR += bufSizeIn;
+		posR = (posR < bufSizeDly) ? posR : posR - bufSizeDly;
 
 		for (size_t pos = 0; pos < bufSizeIn; ++pos, ++posW)
 		{
