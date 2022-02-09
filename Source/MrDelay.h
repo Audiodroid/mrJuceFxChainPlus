@@ -11,9 +11,8 @@
 */
 #pragma once
 
-#include <cmath>
-#include <vector>
-#include <iterator>
+#include <algorithm>
+
 #include <JuceHeader.h>
 
 /**
@@ -111,6 +110,8 @@ public:
 		}
 
 		int bufSizeDly = dlyBufs.getNumSamples();
+		int copyFromEnd = std::min((int) (bufSizeDly - posR), (int) bufSizeIn);
+		int copyFromFront = bufSizeIn - copyFromEnd;
 
 		for (int c = 0; c < numChannels; ++c)
 		{
@@ -119,11 +120,15 @@ public:
 			auto* dly = dlyBufs.getReadPointer(c);
 
 			auto tmp = posR;
-			for (size_t pos = 0; pos < bufSizeIn; ++pos, ++tmp)
+			for (size_t pos = 0; pos < copyFromEnd; ++pos, ++tmp)
 			{
-				if (tmp >= bufSizeDly)
-					tmp = 0;
+				const FloatType fb = feedback.getNextValue();
+				dst[pos] = src[pos] + (fb * dly[tmp]);
+			}
 
+			tmp = 0;
+			for (size_t pos = 0; pos < copyFromFront; ++pos, ++tmp)
+			{
 				const FloatType fb = feedback.getNextValue();
 				dst[pos] = src[pos] + (fb * dly[tmp]);
 			}
@@ -140,12 +145,12 @@ public:
 			for (int c = 0; c < numChannels; ++c)
 			{
 				auto* src = inBlock.getChannelPointer(c);
-				auto* dst = outBlock.getChannelPointer(c);											
+				auto* dst = outBlock.getChannelPointer(c);
 
 				dlyBufs.setSample(c, posW, dst[pos]);
 			}
 		}
-	}	
+	}
 
 private:
 
