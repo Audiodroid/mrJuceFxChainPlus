@@ -107,49 +107,46 @@ public:
 				outBlock.copyFrom(inBlock);
 
 			return;
-		}
+		}		
 
 		int bufSizeDly = dlyBufs.getNumSamples();
+		
+		// read from input and delay buffer to produce output
 		int copyFromEnd = std::min((int) (bufSizeDly - posR), (int) bufSizeIn);
 		int copyFromFront = bufSizeIn - copyFromEnd;
-
+		
 		for (int c = 0; c < numChannels; ++c)
 		{
-			auto* src = inBlock.getChannelPointer(c);
-			auto* dst = outBlock.getChannelPointer(c);
-			auto* dly = dlyBufs.getReadPointer(c);
+			auto* inData = inBlock.getChannelPointer(c);
+			auto* outData = outBlock.getChannelPointer(c);
+			auto* dlyData = dlyBufs.getReadPointer(c);
 
-			auto tmp = posR;
-			for (size_t pos = 0; pos < copyFromEnd; ++pos, ++tmp)
-			{
-				const FloatType fb = feedback.getNextValue();
-				dst[pos] = src[pos] + (fb * dly[tmp]);
-			}
-
-			tmp = 0;
-			for (size_t pos = 0; pos < copyFromFront; ++pos, ++tmp)
-			{
-				const FloatType fb = feedback.getNextValue();
-				dst[pos] = src[pos] + (fb * dly[tmp]);
-			}
+			auto offset = posR;
+			for (size_t pos = 0; pos < copyFromEnd; ++pos, ++offset)
+				outData[pos] = inData[pos] + dlyData[offset];
+			
+			for (size_t pos = 0; pos < copyFromFront; ++pos)
+				outData[pos] = inData[pos] + dlyData[pos];				
 		}
 
 		posR += bufSizeIn;
 		posR = (posR < bufSizeDly) ? posR : posR - bufSizeDly;
 
-		for (size_t pos = 0; pos < bufSizeIn; ++pos, ++posW)
+		// write to circular delay buffer
+		const FloatType feedbackVal = feedback.getNextValue();
+
+		int copyToEnd = std::min((int)(bufSizeDly - posW), (int)bufSizeIn);
+		int copyToFront = bufSizeIn - copyFromEnd;
+		for (int c = 0; c < numChannels; ++c)
 		{
-			if (posW >= bufSizeDly)
-				posW = 0;
-
-			for (int c = 0; c < numChannels; ++c)
-			{
-				auto* src = inBlock.getChannelPointer(c);
-				auto* dst = outBlock.getChannelPointer(c);
-
-				dlyBufs.setSample(c, posW, dst[pos]);
-			}
+			auto* chnlData = inBlock.getChannelPointer(c);
+		
+			dlyBufs.copyFromWithRamp(c, posW, chnlData, copyToEnd, feedbackVal, feedbackVal);
+			dlyBufs.copyFromWithRamp(c, 0, chnlData, copyToFront, feedbackVal, feedbackVal);
 		}
+
+		posW += bufSizeIn;
+		posW = (posW < bufSizeDly) ? posW : posW - bufSizeDly;
 	}
 
 private:
