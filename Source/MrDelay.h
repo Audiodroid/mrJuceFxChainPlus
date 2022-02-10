@@ -106,8 +106,8 @@ public:
 			return;
 		}
 
-		posR = writeToOutput(inBlock, 
-			dlyBufs, 
+		posR = writeToOutput(inBlock,
+			dlyBufs,
 			outBlock,
 			posR);
 

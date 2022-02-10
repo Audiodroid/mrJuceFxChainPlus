@@ -13,17 +13,18 @@
 #include "MrUnitTestRunner.h"
 
 //==============================================================================
-MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
+MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor() :
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
+     AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
 #endif
+    _juceFxChainWrapper(std::make_unique<JuceFxChainWrapper>())
 {    
 #if _DEBUG
     try {
@@ -39,22 +40,22 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
 
     }
 #endif
-    _juceFxChainWrapper = std::shared_ptr<IJuceFxChainWrapper>(new JuceFxChainWrapper());
 }
 
-MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor(std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper)
+MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor(std::shared_ptr<IJuceFxChainWrapper> juceFxChainWrapper) :
 #ifndef JucePlugin_PreferredChannelConfigurations
-    : AudioProcessor(BusesProperties()
+    AudioProcessor(BusesProperties()
 #if ! JucePlugin_IsMidiEffect
 #if ! JucePlugin_IsSynth
         .withInput("Input", juce::AudioChannelSet::stereo(), true)
 #endif
         .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-    )
-#endif
+    ),
+#endif 
+    _juceFxChainWrapper(juceFxChainWrapper)
 {
-    _juceFxChainWrapper = juceFxChainWrapper;
+    
 }
 
 MrJuceFxChainPlusAudioProcessor::~MrJuceFxChainPlusAudioProcessor()

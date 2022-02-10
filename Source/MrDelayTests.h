@@ -18,8 +18,7 @@ public:
             float feedbackExpected = 0.7f;
 
             /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+            auto delay(std::make_unique<MrDelay<float>>());
 
             delay->setFeedback(feedbackExpected);
             auto feedbackActual = delay->getFeedback();
@@ -33,8 +32,7 @@ public:
             size_t delayInSmplsExpected = 24000;
 
             /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+            std::unique_ptr<MrDelay<float>> delay(new MrDelay<float>());
 
             delay->setDelayInSmpls(delayInSmplsExpected);
             auto delayInSmplsActual = delay->getDelayInSmpls();
@@ -48,8 +46,7 @@ public:
             double delayInMsExpected = 500;
 
             /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+            auto delay(std::make_unique<MrDelay<float>>());
 
             delay->setDelayInMs(delayInMsExpected);
             auto delayInMsActual = delay->getDelayInMs();
@@ -67,8 +64,7 @@ public:
             size_t delayInSmplsExpected = delayInSmpls1st * 2;
 
             /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+            auto delay(std::make_unique<MrDelay<float>>());
 
             juce::dsp::ProcessSpec spec;
             spec.numChannels = 2;
@@ -111,8 +107,7 @@ public:
             
             
             /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+            auto delay(std::make_unique<MrDelay<float>>());
 
             juce::dsp::ProcessSpec spec;
             spec.numChannels = numChnls;
@@ -165,8 +160,7 @@ public:
             MrSignal::ramp(audioSrcChnlInfo);
 
             /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
+            auto delay(std::make_unique<MrDelay<float>>());
 
             juce::dsp::ProcessSpec spec;
             spec.numChannels = numChnls;
