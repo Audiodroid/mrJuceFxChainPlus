@@ -97,7 +97,7 @@ public:
 
 		jassert(inBlock.getNumChannels() == outBlock.getNumChannels());
 		jassert(inBlock.getNumSamples() == outBlock.getNumSamples());
-
+		
 		if (context.isBypassed)
 		{
 			if (context.usesSeparateInputAndOutputBlocks())
@@ -161,10 +161,10 @@ public:
 		size_t numChannels = in.getNumChannels();
 		for (size_t c = 0; c < numChannels; ++c)
 		{
-			auto* chnlData = in.getChannelPointer(c);
+			auto* inData = in.getChannelPointer(c);
 
-			dly.copyFromWithRamp((int)c, pos, chnlData, numSamplesToEnd, feedbackVal, feedbackVal);
-			dly.copyFromWithRamp((int)c, 0, chnlData + numSamplesToEnd, numSamplesToFront, feedbackVal, feedbackVal);
+			dly.copyFromWithRamp((int)c, pos, inData, numSamplesToEnd, feedbackVal, feedbackVal);
+			dly.copyFromWithRamp((int)c, 0, inData + numSamplesToFront, numSamplesToFront, feedbackVal, feedbackVal);
 		}
 
 		pos += bufSizeIn;

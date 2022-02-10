@@ -85,74 +85,31 @@ public:
 
             /// evaluate...
             expect(delayInSmplsActual == delayInSmplsExpected);
-        }
+        }        
 
-        beginTest("When stereo delay with 2-samples-delay-time then as of 3rd sample delay comes in on both channels");
-        {
-            const int numChnls = 2;
-            const int numSamples = 4;
-
-            const size_t delayInSmpls = 2;
-            const float feedback = 0.5f;
-
-            const std::vector<float> outExpected = { 0.1f, 0.2f, 0.35f, 0.5f }; ///input being (0.1, 0.2, 0.3, 0.4)
-            const auto deltaExpected = 0.0000001f;
-
-            /// prepare... 
-            juce::AudioBuffer<float> audioBuffer(numChnls, numSamples);
-            juce::AudioSourceChannelInfo audioSrcChnlInfo(audioBuffer);
-
-            /* creates ramp i.e. (0.1, 0.2, 0.3, 0.4) */
-            MrSignal::ramp(audioSrcChnlInfo);
-
-            /// execute...
-            std::shared_ptr<MrDelay<float>> delay =
-                std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
-
-            juce::dsp::ProcessSpec spec;
-            spec.numChannels = numChnls;
-            spec.maximumBlockSize = numSamples;
-
-            delay->prepare(spec);
-            delay->setDelayInSmpls(delayInSmpls);
-            delay->setFeedback(feedback);
-
-            juce::dsp::AudioBlock<float> block(audioBuffer);
-            juce::dsp::ProcessContextReplacing<float> context(block);
-            delay->process(context);
-
-            /// evaluate...
-            for (int channel = 0; channel < audioSrcChnlInfo.buffer->getNumChannels(); ++channel)
-            {
-                const float* outActual = audioSrcChnlInfo.buffer->getReadPointer(channel, audioSrcChnlInfo.startSample);
-
-                for (int i = 0; i < numSamples; ++i)
-                {
-                    auto deltaActual = outActual[i] - outExpected[i];
-                    expect(deltaActual < deltaExpected);
-                }
-            }
-        }
-
-        beginTest("When processing 2 blocks then delay still works as expected");
-        {
+        beginTest("When processing 3 blocks then delay still works as expected");
+        {            
             const int numChnls = 2;
             const int numSamplesPerBlock = 2;
-            const int numSamples = 4;
-            const int numBlocks = numSamples / numSamplesPerBlock;
+            const int numSamplesIn = 6;
+            const int numBlocks = numSamplesIn / numSamplesPerBlock;
             const size_t delayInSmpls = 2;
             const float feedback = 0.5f;
 
-            const std::vector<float> outExpected = { 0.1f, 0.2f, 0.35f, 0.5f }; ///input being (0.1, 0.2, 0.3, 0.4)
+            float source[] = { 1, 2, 3, 4, 5, 6 };
+            const std::vector<float> outExpected = { 1.0, 2.0, 3.5, 5.0, 6.75, 8.5 };
             const auto deltaExpected = 0.0000001f;
 
             /// prepare... 
-            juce::AudioBuffer<float> audioBuffer(numChnls, numSamples);
+            juce::AudioBuffer<float> audioBuffer(numChnls, numSamplesIn);
             juce::AudioSourceChannelInfo audioSrcChnlInfo(audioBuffer);
 
             /* creates ramp i.e. (0.1, 0.2, 0.3, 0.4) */
-            MrSignal::ramp(audioSrcChnlInfo);
-
+            int numChannels = audioSrcChnlInfo.buffer->getNumChannels();
+            for (int c = 0; c < numChannels; ++c)
+                audioSrcChnlInfo.buffer->copyFrom(c, 0, source, numSamplesIn);
+            
+            
             /// execute...
             std::shared_ptr<MrDelay<float>> delay =
                 std::shared_ptr<MrDelay<float>>(new MrDelay<float>());
@@ -180,9 +137,9 @@ public:
             {
                 const float* outActual = audioSrcChnlInfo.buffer->getReadPointer(channel, audioSrcChnlInfo.startSample);
 
-                for (int i = 0; i < numSamples; ++i)
+                for (int i = 0; i < numSamplesIn; ++i)
                 {
-                    auto deltaActual = outActual[i] - outExpected[i];
+                    auto deltaActual = abs(outActual[i] - outExpected[i]);
                     expect(deltaActual < deltaExpected);
                 }
             }
@@ -233,7 +190,7 @@ public:
 
                 for (int i = 0; i < numSamples; ++i)
                 {
-                    auto deltaActual = outActual[i] - outExpected[i];
+                    auto deltaActual = abs(outActual[i] - outExpected[i]);
                     expect(deltaActual < deltaExpected);
                 }
             }
