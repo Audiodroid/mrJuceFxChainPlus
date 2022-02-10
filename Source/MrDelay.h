@@ -164,7 +164,7 @@ public:
 			auto* inData = in.getChannelPointer(c);
 
 			dly.copyFromWithRamp((int)c, pos, inData, numSamplesToEnd, feedbackVal, feedbackVal);
-			dly.copyFromWithRamp((int)c, 0, inData + numSamplesToFront, numSamplesToFront, feedbackVal, feedbackVal);
+			dly.copyFromWithRamp((int)c, 0, inData + numSamplesToEnd, numSamplesToFront, feedbackVal, feedbackVal);
 		}
 
 		pos += bufSizeIn;
