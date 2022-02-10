@@ -50,7 +50,7 @@ public:
 
 	void reset() {
 
-		dlyBufs.setSize(numChnls, delayInSmpls+1);
+		dlyBufs.setSize(numChnls, delayInSmpls + 1);
 		dlyBufs.clear();
 
 		posR = 0;
@@ -97,7 +97,7 @@ public:
 
 		jassert(inBlock.getNumChannels() == outBlock.getNumChannels());
 		jassert(inBlock.getNumSamples() == outBlock.getNumSamples());
-		
+
 		if (context.isBypassed)
 		{
 			if (context.usesSeparateInputAndOutputBlocks())
@@ -121,8 +121,8 @@ public:
 		juce::dsp::AudioBlock<float>& out,
 		int pos)
 	{
-		int bufSizeDly = (int) dly.getNumSamples();
-		int bufSizeIn = (int) in.getNumSamples();
+		int bufSizeDly = (int)dly.getNumSamples();
+		int bufSizeIn = (int)in.getNumSamples();
 
 		int numSamplesFromEnd = std::min((int)(bufSizeDly - pos), bufSizeIn);
 		int numSamplesFromFront = bufSizeIn - numSamplesFromEnd;

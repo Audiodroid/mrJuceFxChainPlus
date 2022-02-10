@@ -40,7 +40,9 @@ public:
         *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
 
         filter.prepare(spec);
-        filter.reset();
+        filter.reset();      
+
+        //_pJuceFxChain->template setBypassed<idxFilter>(true);
     }
 
     void setupDelay(juce::dsp::ProcessSpec& spec)
@@ -58,6 +60,8 @@ public:
     void setupReverb()
     {
         setRoomSize(ROOMSIZE);
+
+        //_pJuceFxChain->template setBypassed<idxReverb>(true);
     }
 
     void prepare(juce::dsp::ProcessSpec& spec)
@@ -123,6 +127,8 @@ public:
         *filter.state = *FilterCoefs::makeLowPass(_sampleRate, _cutOffInHz, 5.0);
 
         _updateFilterFlag = false;
+
+        
     }
 
     void updateDelay()
