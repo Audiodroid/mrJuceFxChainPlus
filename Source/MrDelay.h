@@ -106,7 +106,10 @@ public:
 			return;
 		}
 
-		posR = writeToOutput(inBlock, dlyBufs, outBlock, posR);
+		posR = writeToOutput(inBlock, 
+			dlyBufs, 
+			outBlock,
+			posR);
 
 		const FloatType feedbackVal = feedback.getNextValue();
 		posW = writeToDelayBuffer(inBlock, dlyBufs, posW, feedbackVal);
@@ -127,7 +130,7 @@ public:
 		if (numSamplesFromEnd > 0)
 		{
 			auto in1 = in.getSubBlock(0, numSamplesFromEnd);
-			juce::dsp::AudioBlock<float> dly1(dly, pos);
+			const juce::dsp::AudioBlock<const float> dly1(dly, pos);
 			auto out1 = out.getSubBlock(0, numSamplesFromEnd);
 			out1.replaceWithSumOf(in1, dly1);
 		}
@@ -135,7 +138,7 @@ public:
 		if (numSamplesFromFront > 0)
 		{
 			auto in2 = in.getSubBlock(numSamplesFromEnd, numSamplesFromFront);
-			juce::dsp::AudioBlock<float> dly2(dly, 0);
+			const juce::dsp::AudioBlock<const float> dly2(dly, 0);
 			auto out2 = out.getSubBlock(numSamplesFromEnd, numSamplesFromFront);
 			out2.replaceWithSumOf(in2, dly2);
 		}

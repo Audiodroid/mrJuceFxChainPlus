@@ -1,0 +1,36 @@
+warning: CRLF will be replaced by LF in Source/MrDelay.h.
+The file will have its original line endings in your working directory
+[1mdiff --git a/Source/MrDelay.h b/Source/MrDelay.h[m
+[1mindex 8bb1368..8a2cb70 100644[m
+[1m--- a/Source/MrDelay.h[m
+[1m+++ b/Source/MrDelay.h[m
+[36m@@ -106,7 +106,10 @@[m [mpublic:[m
+ 			return;[m
+ 		}[m
+ [m
+[31m-		posR = writeToOutput(inBlock, dlyBufs, outBlock, posR);[m
+[32m+[m		[32mposR = writeToOutput(inBlock,[m[41m [m
+[32m+[m			[32mdlyBufs,[m[41m [m
+[32m+[m			[32moutBlock,[m
+[32m+[m			[32mposR);[m
+ [m
+ 		const FloatType feedbackVal = feedback.getNextValue();[m
+ 		posW = writeToDelayBuffer(inBlock, dlyBufs, posW, feedbackVal);[m
+[36m@@ -127,7 +130,7 @@[m [mpublic:[m
+ 		if (numSamplesFromEnd > 0)[m
+ 		{[m
+ 			auto in1 = in.getSubBlock(0, numSamplesFromEnd);[m
+[31m-			juce::dsp::AudioBlock<float> dly1(dly, pos);[m
+[32m+[m			[32mconst juce::dsp::AudioBlock<const float> dly1(dly, pos);[m
+ 			auto out1 = out.getSubBlock(0, numSamplesFromEnd);[m
+ 			out1.replaceWithSumOf(in1, dly1);[m
+ 		}[m
+[36m@@ -135,7 +138,7 @@[m [mpublic:[m
+ 		if (numSamplesFromFront > 0)[m
+ 		{[m
+ 			auto in2 = in.getSubBlock(numSamplesFromEnd, numSamplesFromFront);[m
+[31m-			juce::dsp::AudioBlock<float> dly2(dly, 0);[m
+[32m+[m			[32mconst juce::dsp::AudioBlock<const float> dly2(dly, 0);[m
+ 			auto out2 = out.getSubBlock(numSamplesFromEnd, numSamplesFromFront);[m
+ 			out2.replaceWithSumOf(in2, dly2);[m
+ 		}[m
