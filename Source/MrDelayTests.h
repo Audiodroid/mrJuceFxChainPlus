@@ -113,8 +113,8 @@ public:
             spec.numChannels = numChnls;
             spec.maximumBlockSize = numSamples;
 
-            delay->setDelayInSmpls(delayInSmpls);
             delay->prepare(spec);
+            delay->setDelayInSmpls(delayInSmpls);
             delay->setFeedback(feedback);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);
@@ -161,8 +161,8 @@ public:
             spec.numChannels = numChnls;
             spec.maximumBlockSize = numSamplesPerBlock;
 
-            delay->setDelayInSmpls(delayInSmpls);
             delay->prepare(spec);
+            delay->setDelayInSmpls(delayInSmpls);            
             delay->setFeedback(feedback);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);
@@ -215,8 +215,8 @@ public:
             spec.numChannels = numChnls;
             spec.maximumBlockSize = numSamples;
 
-            delay->setDelayInSmpls(delayInSmpls);
             delay->prepare(spec);
+            delay->setDelayInSmpls(delayInSmpls);            
             delay->setFeedback(feedback);
 
             juce::dsp::AudioBlock<float> block(audioBuffer);

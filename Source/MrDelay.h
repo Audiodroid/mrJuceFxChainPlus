@@ -50,11 +50,11 @@ public:
 
 	void reset() {
 
-		dlyBufs.setSize(numChnls, delayInSmpls);
+		dlyBufs.setSize(numChnls, delayInSmpls+1);
 		dlyBufs.clear();
 
 		posR = 0;
-		posW = delayInSmpls - 1;
+		posW = delayInSmpls;
 	}
 
 	/** Applies new delay as a millisecond value. */
@@ -124,10 +124,13 @@ public:
 		int numSamplesFromEnd = std::min((int)(bufSizeDly - pos), bufSizeIn);
 		int numSamplesFromFront = bufSizeIn - numSamplesFromEnd;
 
-		auto in1 = in.getSubBlock(0, numSamplesFromEnd);
-		juce::dsp::AudioBlock<float> dly1(dly, pos);
-		auto out1 = out.getSubBlock(0, numSamplesFromEnd);
-		out1.replaceWithSumOf(in1, dly1);
+		if (numSamplesFromEnd > 0)
+		{
+			auto in1 = in.getSubBlock(0, numSamplesFromEnd);
+			juce::dsp::AudioBlock<float> dly1(dly, pos);
+			auto out1 = out.getSubBlock(0, numSamplesFromEnd);
+			out1.replaceWithSumOf(in1, dly1);
+		}
 
 		if (numSamplesFromFront > 0)
 		{
@@ -151,16 +154,17 @@ public:
 	{
 		int bufSizeDly = dly.getNumSamples();
 		int bufSizeIn = in.getNumSamples();
-		size_t numChannels = in.getNumChannels();
 
 		int numSamplesToEnd = std::min((int)(bufSizeDly - pos), (int)bufSizeIn);
 		int numSamplesToFront = bufSizeIn - numSamplesToEnd;
+
+		size_t numChannels = in.getNumChannels();
 		for (size_t c = 0; c < numChannels; ++c)
 		{
 			auto* chnlData = in.getChannelPointer(c);
 
 			dly.copyFromWithRamp((int)c, pos, chnlData, numSamplesToEnd, feedbackVal, feedbackVal);
-			dly.copyFromWithRamp((int)c, 0, chnlData, numSamplesToFront, feedbackVal, feedbackVal);
+			dly.copyFromWithRamp((int)c, 0, chnlData + numSamplesToEnd, numSamplesToFront, feedbackVal, feedbackVal);
 		}
 
 		pos += bufSizeIn;

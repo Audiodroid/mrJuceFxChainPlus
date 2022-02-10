@@ -28,8 +28,8 @@ MrJuceFxChainPlusAudioProcessor::MrJuceFxChainPlusAudioProcessor()
 #if _DEBUG
     try {
         
-        //MrUnitTestRunner unitTestRunner;
-        //unitTestRunner.runAllTests();
+        MrUnitTestRunner unitTestRunner;
+        unitTestRunner.runAllTests();
 
     } catch (std::exception& e) {
         std::cout << "Unit tests threw an exception: " << e.what() << std::endl;
