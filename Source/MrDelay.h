@@ -141,7 +141,7 @@ public:
 		}
 
 		pos += bufSizeIn;
-		pos = (pos < bufSizeDly) ? pos : pos - bufSizeDly;
+		pos %= bufSizeDly;
 
 		return pos;
 	}
@@ -168,7 +168,7 @@ public:
 		}
 
 		pos += bufSizeIn;
-		pos = (pos < bufSizeDly) ? pos : pos - bufSizeDly;
+		pos %= bufSizeDly;
 
 		return pos;
 	}
